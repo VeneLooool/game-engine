@@ -27,14 +27,7 @@ GLFWwindow* create_window(GLuint WIDTH, GLuint HEIGHT, const char* str)
 	glViewport(0, 0, WIDTH, HEIGHT);
 
 	return(window);	
-}
-
-Shader& setup_shaders(GLchar strVs, GLchar strFrag) 
-{
-	Shader ourShader(&strVs, &strFrag);
-
-	return(ourShader);
-}
+}	
 
 void setup_bufers(GLuint VAO, GLuint EBO, GLuint VBO)
 {
@@ -63,7 +56,7 @@ void setup_bufers(GLuint VAO, GLuint EBO, GLuint VBO)
 
 }
 
-void delete_shader(GLuint VAO, GLuint EBO, GLuint VBO)
+void delete_buffers(GLuint VAO, GLuint EBO, GLuint VBO)
 {
 	glDeleteVertexArrays(1,  &VAO);
 	glDeleteBuffers(1, &VBO);

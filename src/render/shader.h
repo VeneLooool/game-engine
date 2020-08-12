@@ -1,7 +1,7 @@
 #ifndef SHADER_H
 #define SHADER_H
 
-#include "../../include.h"
+#include "../include.h"
 
 #include <GL/glew.h>
 
@@ -23,6 +23,15 @@ public:
         {
             vShaderFile.open(vertexPath);
             fShaderFile.open(fragmentPath);
+
+            if (!vShaderFile.is_open()) {
+                cout << "ERROR: file not open with path "<<vertexPath<<endl;
+            }
+
+            if (!fShaderFile.is_open()) {
+                cout << "ERROR: file not open with path " << fragmentPath<<endl;
+            }
+
             std::stringstream vShaderStream, fShaderStream;
 
             vShaderStream << vShaderFile.rdbuf();
@@ -87,6 +96,15 @@ public:
     {
         glUseProgram(this->Program);
     }
+};
+
+class t_shader
+{
+public:
+    vector<Shader> vec;
+
+    void push_shader(Shader link);
+    void load_shader(const GLchar* strVs, const GLchar* strFrag);
 };
 
 #endif 
