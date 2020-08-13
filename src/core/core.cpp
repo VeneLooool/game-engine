@@ -2,7 +2,7 @@
 
 t_shader vec_shader;
 
-glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+glm::vec3 lightPos(0.8f, 1.0f, 1.0f);
 
 Camera  camera(glm::vec3(0.0f, 0.0f, 3.0f));
 GLfloat lastX = 800 / 2.0;
@@ -122,14 +122,18 @@ void main_loop()
         glfwPollEvents();
         do_movement();
 
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         vec_shader.vec[0].Use();
         GLint objectColorLoc = glGetUniformLocation(vec_shader.vec[0].Program, "objectColor");
         GLint lightColorLoc = glGetUniformLocation(vec_shader.vec[0].Program, "lightColor");
+        GLint lightPosLoc = glGetUniformLocation(vec_shader.vec[0].Program, "lightPos");
+        GLint viewPosLoc = glGetUniformLocation(vec_shader.vec[0].Program, "viewPos");
         glUniform3f(objectColorLoc, 1.0f, 0.5f, 0.31f);
         glUniform3f(lightColorLoc, 1.0f, 0.5f, 1.0f);
+        glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
+        glUniform3f(viewPosLoc, camera.Position.x, camera.Position.y, camera.Position.z);
 
         // Create camera transformations
         glm::mat4 view;

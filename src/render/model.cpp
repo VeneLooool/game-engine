@@ -12,41 +12,68 @@ void t_model::load_obj(std::string path)
 		string line;
 		bool vn = false, vt = false;
 
+		vector<glm::vec3> points;
+		vector<glm::vec3> normals;
+		vector<glm::vec2> textures;
+
 		while (!file_obj.eof()) 
 		{
 			getline(file_obj, line);
-			
-			t_vertex vert_scan;
-			unsigned int tri_scan[3];
 
 			if (line[0] == 'v' && line[1] == ' ')
 			{
+				float x, y, z;
 				sscanf_s(line.c_str(), "%*s %f %f %f",	//может быть crash из за этого
-					&vert_scan.pos.x,
-					&vert_scan.pos.y,
-					&vert_scan.pos.z
+					&x,
+					&y,
+					&z
 				);
 
-				vert.push_back(vert_scan);
-			}
-			else if (line[0] == 'f' && line[1] == ' ')
-			{		
-				sscanf_s(line.c_str(), "%*s %i %i %i", //может быть crash из за этого
-					&tri_scan[0],
-					&tri_scan[1],
-					&tri_scan[2]
-				);
-
-				tri.push_back(tri_scan[0]-1); tri.push_back(tri_scan[1]-1); tri.push_back(tri_scan[2]-1);
+				points.push_back({ x,y,z });
 			}
 			else if (line[0] == 'v' && line[1] == 'n' && line[2] == ' ')
 			{
-
-
+				float x, y, z;
+				sscanf_s(line.c_str(), "%*s %f %f %f",	//может быть crash из за этого
+					&x,
+					&y,
+					&z
+				);
+				normals.push_back({ x,y,z });
 			}
 			else if (line[0] == 'v' && line[1] == 't' && line[2] == ' ')
 			{
+				float x, y;
+				sscanf_s(line.c_str(), "%*s %f %f",	//может быть crash из за этого
+					&x,
+					&y
+				);
 
+				textures.push_back({ x,y });
+			}
+			else if (line[0] == 'f' && line[1] == ' ')
+			{
+				int v[3];
+				int n[3];
+				int t[3];
+
+				sscanf_s(line.c_str(), "%*s %i/%i/%i %i/%i/%i %i/%i/%i",
+					&v[0], &t[0], &n[0],
+					&v[1], &t[1], &n[1],
+					&v[2], &t[2], &n[2]);
+
+				for (int i = 0; i < 3; i++) {
+
+					t_vertex key = {
+						points[v[i] - 1],
+						normals[n[i] - 1],
+						textures[t[i] - 1]
+					};
+
+					vert.push_back(key);
+					tri.push_back(vert.size()-1);
+
+				}
 
 			}
 		}
