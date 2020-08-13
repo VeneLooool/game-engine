@@ -1,4 +1,4 @@
-
+#include "shader.h"
 #include "../include.h"
 
 struct  t_vertex
@@ -8,27 +8,24 @@ struct  t_vertex
 	glm::vec2 text;
 };
 
-struct t_triangle
+struct t_texture 
 {
-	int index[3];
+	unsigned int id;
+	string type;
 };
 
 struct t_model
 {
-	struct vertex {
-		t_vertex v;
-		//mb name_model
-	};
 
-	struct triangle {
-		int index[3];
-		//material
-	};
 
-	vector<vertex> vert;
-	vector<triangle> tri;
+public:
+	vector<t_vertex> vert;
+	vector<unsigned int> tri;
 
 	int curent_shader;
 
+	unsigned int VAO, VBO, EBO;
 	void load_obj(std::string path);
+	void setup_mesh();
+	void draw(Shader shader);
 };

@@ -25,17 +25,25 @@ void main_loop()
 
     GLFWwindow* window = create_window(WIDTH, HEIGHT, "Engine");
 
-    //t_model model;
-    //model.curent_shader = 0;
+    t_model light;
+    light.curent_shader = 0;
     //model.load_obj("C:/Users/panih/source/repos/Engine/Engine/res/models/VideoShip.obj");
+    light.load_obj("C:/Users/panih/source/repos/Engine/Engine/res/models/cube.obj");
+    light.setup_mesh();
+
+    t_model lamp;
+    lamp.curent_shader = 0;
+    lamp.load_obj("C:/Users/panih/source/repos/Engine/Engine/res/models/cube.obj");
+    lamp.setup_mesh();
 
 	vec_shader.load_shader("C:/Users/panih/source/repos/Engine/Engine/res/shaders/light.vs", "C:/Users/panih/source/repos/Engine/Engine/res/shaders/light.frag");
     vec_shader.load_shader("C:/Users/panih/source/repos/Engine/Engine/res/shaders/lamp.vs", "C:/Users/panih/source/repos/Engine/Engine/res/shaders/lamp.frag");
 
-    GLfloat vertices[] = {
+    /*GLfloat vertices[] = {
         -0.5f, -0.5f, -0.5f,
          0.5f, -0.5f, -0.5f,
          0.5f,  0.5f, -0.5f,
+
          0.5f,  0.5f, -0.5f,
         -0.5f,  0.5f, -0.5f,
         -0.5f, -0.5f, -0.5f,
@@ -43,6 +51,7 @@ void main_loop()
         -0.5f, -0.5f,  0.5f,
          0.5f, -0.5f,  0.5f,
          0.5f,  0.5f,  0.5f,
+
          0.5f,  0.5f,  0.5f,
         -0.5f,  0.5f,  0.5f,
         -0.5f, -0.5f,  0.5f,
@@ -50,6 +59,7 @@ void main_loop()
         -0.5f,  0.5f,  0.5f,
         -0.5f,  0.5f, -0.5f,
         -0.5f, -0.5f, -0.5f,
+
         -0.5f, -0.5f, -0.5f,
         -0.5f, -0.5f,  0.5f,
         -0.5f,  0.5f,  0.5f,
@@ -57,6 +67,7 @@ void main_loop()
          0.5f,  0.5f,  0.5f,
          0.5f,  0.5f, -0.5f,
          0.5f, -0.5f, -0.5f,
+
          0.5f, -0.5f, -0.5f,
          0.5f, -0.5f,  0.5f,
          0.5f,  0.5f,  0.5f,
@@ -64,6 +75,7 @@ void main_loop()
         -0.5f, -0.5f, -0.5f,
          0.5f, -0.5f, -0.5f,
          0.5f, -0.5f,  0.5f,
+
          0.5f, -0.5f,  0.5f,
         -0.5f, -0.5f,  0.5f,
         -0.5f, -0.5f, -0.5f,
@@ -71,6 +83,7 @@ void main_loop()
         -0.5f,  0.5f, -0.5f,
          0.5f,  0.5f, -0.5f,
          0.5f,  0.5f,  0.5f,
+
          0.5f,  0.5f,  0.5f,
         -0.5f,  0.5f,  0.5f,
         -0.5f,  0.5f, -0.5f
@@ -98,7 +111,7 @@ void main_loop()
     // Set the vertex attributes (only position data for the lamp))
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
     glEnableVertexAttribArray(0);
-    glBindVertexArray(0);
+    glBindVertexArray(0);*/
 
     while (!glfwWindowShouldClose(window))
     {
@@ -108,55 +121,10 @@ void main_loop()
 
         glfwPollEvents();
         do_movement();
-        //RENDER
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        /*vec_shader.vec[0].Use();
-        GLint objectColorLoc = glGetUniformLocation(vec_shader.vec[0].Program, "objectColor");
-        GLint lightColorLoc = glGetUniformLocation(vec_shader.vec[0].Program, "lightColor");
-        glUniform3f(objectColorLoc, 1.0f, 0.5f, 0.31f);
-        glUniform3f(lightColorLoc, 1.0f, 0.5f, 1.0f);
-
-        glm::mat4 view;
-        view = camera.GetViewMatrix();
-        glm::mat4 projection = glm::perspective(camera.Zoom, (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
-        // Get the uniform locations
-        GLint modelLoc = glGetUniformLocation(vec_shader.vec[0].Program, "model");
-        GLint viewLoc = glGetUniformLocation(vec_shader.vec[0].Program, "view");
-        GLint projLoc = glGetUniformLocation(vec_shader.vec[0].Program, "projection");
-        // Pass the matrices to the shader
-        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-        glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
-
-        glBindVertexArray(containerVAO);
-        glm::mat4 model;
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        glBindVertexArray(0);
-
-
-
-        vec_shader.vec[1].Use();
-        // Get location objects for the matrices on the lamp shader (these could be different on a different shader)
-        modelLoc = glGetUniformLocation(vec_shader.vec[1].Program, "model");
-        viewLoc = glGetUniformLocation(vec_shader.vec[1].Program, "view");
-        projLoc = glGetUniformLocation(vec_shader.vec[1].Program, "projection");
-        // Set matrices
-        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-        glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
-        model = glm::mat4();
-        model = glm::translate(model, lightPos);
-        model = glm::scale(model, glm::vec3(0.2f)); // Make it a smaller cube
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-        // Draw the light object (using light's vertex attributes)
-        glBindVertexArray(lightVAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        glBindVertexArray(0);
-        */
-
-        //lightingShader.Use();
         vec_shader.vec[0].Use();
         GLint objectColorLoc = glGetUniformLocation(vec_shader.vec[0].Program, "objectColor");
         GLint lightColorLoc = glGetUniformLocation(vec_shader.vec[0].Program, "lightColor");
@@ -174,13 +142,14 @@ void main_loop()
         // Pass the matrices to the shader
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
-
-        // Draw the container (using container's vertex attributes)
-        glBindVertexArray(containerVAO);
+        
         glm::mat4 model (1.0f);
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        
+        glBindVertexArray(light.VAO);
+        glDrawElements(GL_TRIANGLES, light.tri.size(), GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
+
 
         // Also draw the lamp object, again binding the appropriate shader
         vec_shader.vec[1].Use();
@@ -195,10 +164,11 @@ void main_loop()
         model = glm::translate(model, lightPos);
         model = glm::scale(model, glm::vec3(0.2f)); // Make it a smaller cube
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-        // Draw the light object (using light's vertex attributes)
-        glBindVertexArray(lightVAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+
+        glBindVertexArray(lamp.VAO);
+        glDrawElements(GL_TRIANGLES, lamp.tri.size(), GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
+        
 
         glfwSwapBuffers(window);
     }
