@@ -18,13 +18,18 @@ GLFWwindow* create_window(GLuint WIDTH, GLuint HEIGHT, const char* str)
 	glfwMakeContextCurrent(window);
 
 	glfwSetKeyCallback(window, key_callback);
+	glfwSetCursorPosCallback(window, mouse_callback);
+	glfwSetScrollCallback(window, scroll_callback);
 
-	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	glewExperimental = GL_TRUE;
 
 	glewInit();
+
 	glViewport(0, 0, WIDTH, HEIGHT);
+	
+	glEnable(GL_DEPTH_TEST);
 
 	return(window);	
 }	
