@@ -1,4 +1,5 @@
 #include "shader.h"
+#include "material.h"
 #include "../include.h"
 
 struct  t_vertex
@@ -22,7 +23,12 @@ public:
 	vector<t_vertex> vert;
 	vector<unsigned int> tri;
 
+	t_material material;
+
 	int curent_shader;
+
+	glm::vec3 spawnPosition;
+	glm::vec3 curentPosition;
 
 	unsigned int VAO, VBO, EBO;
 	void load_obj(std::string path);

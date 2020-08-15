@@ -31,6 +31,9 @@ void main_loop()
     light.load_obj("C:/Users/panih/source/repos/Engine/Engine/res/models/cube.obj");
     light.setup_mesh();
 
+    light.spawnPosition = glm::vec3(0.0f, 0.0f, 0.0f);
+    light.curentPosition = light.spawnPosition;
+
     t_model lamp;
     lamp.curent_shader = 0;
     lamp.load_obj("C:/Users/panih/source/repos/Engine/Engine/res/models/cube.obj");
@@ -38,80 +41,6 @@ void main_loop()
 
 	vec_shader.load_shader("C:/Users/panih/source/repos/Engine/Engine/res/shaders/light.vs", "C:/Users/panih/source/repos/Engine/Engine/res/shaders/light.frag");
     vec_shader.load_shader("C:/Users/panih/source/repos/Engine/Engine/res/shaders/lamp.vs", "C:/Users/panih/source/repos/Engine/Engine/res/shaders/lamp.frag");
-
-    /*GLfloat vertices[] = {
-        -0.5f, -0.5f, -0.5f,
-         0.5f, -0.5f, -0.5f,
-         0.5f,  0.5f, -0.5f,
-
-         0.5f,  0.5f, -0.5f,
-        -0.5f,  0.5f, -0.5f,
-        -0.5f, -0.5f, -0.5f,
-
-        -0.5f, -0.5f,  0.5f,
-         0.5f, -0.5f,  0.5f,
-         0.5f,  0.5f,  0.5f,
-
-         0.5f,  0.5f,  0.5f,
-        -0.5f,  0.5f,  0.5f,
-        -0.5f, -0.5f,  0.5f,
-
-        -0.5f,  0.5f,  0.5f,
-        -0.5f,  0.5f, -0.5f,
-        -0.5f, -0.5f, -0.5f,
-
-        -0.5f, -0.5f, -0.5f,
-        -0.5f, -0.5f,  0.5f,
-        -0.5f,  0.5f,  0.5f,
-
-         0.5f,  0.5f,  0.5f,
-         0.5f,  0.5f, -0.5f,
-         0.5f, -0.5f, -0.5f,
-
-         0.5f, -0.5f, -0.5f,
-         0.5f, -0.5f,  0.5f,
-         0.5f,  0.5f,  0.5f,
-
-        -0.5f, -0.5f, -0.5f,
-         0.5f, -0.5f, -0.5f,
-         0.5f, -0.5f,  0.5f,
-
-         0.5f, -0.5f,  0.5f,
-        -0.5f, -0.5f,  0.5f,
-        -0.5f, -0.5f, -0.5f,
-
-        -0.5f,  0.5f, -0.5f,
-         0.5f,  0.5f, -0.5f,
-         0.5f,  0.5f,  0.5f,
-
-         0.5f,  0.5f,  0.5f,
-        -0.5f,  0.5f,  0.5f,
-        -0.5f,  0.5f, -0.5f
-    };
-    // First, set the container's VAO (and VBO)
-    GLuint VBO, containerVAO;
-    glGenVertexArrays(1, &containerVAO);
-    glGenBuffers(1, &VBO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    glBindVertexArray(containerVAO);
-    // Position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
-    glEnableVertexAttribArray(0);
-    glBindVertexArray(0);
-
-    // Then, we set the light's VAO (VBO stays the same. After all, the vertices are the same for the light object (also a 3D cube))
-    GLuint lightVAO;
-    glGenVertexArrays(1, &lightVAO);
-    glBindVertexArray(lightVAO);
-    // We only need to bind to the VBO (to link it with glVertexAttribPointer), no need to fill it; the VBO's data already contains all we need.
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    // Set the vertex attributes (only position data for the lamp))
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
-    glEnableVertexAttribArray(0);
-    glBindVertexArray(0);*/
 
     while (!glfwWindowShouldClose(window))
     {
@@ -126,14 +55,37 @@ void main_loop()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         vec_shader.vec[0].Use();
-        GLint objectColorLoc = glGetUniformLocation(vec_shader.vec[0].Program, "objectColor");
-        GLint lightColorLoc = glGetUniformLocation(vec_shader.vec[0].Program, "lightColor");
-        GLint lightPosLoc = glGetUniformLocation(vec_shader.vec[0].Program, "lightPos");
+        GLint lightPosLoc = glGetUniformLocation(vec_shader.vec[0].Program, "light.position");
+        GLint lightAmbientLoc = glGetUniformLocation(vec_shader.vec[0].Program, "light.ambient");
+        GLint lightDiffuseLoc = glGetUniformLocation(vec_shader.vec[0].Program, "light.diffuse");
+        GLint lightSpecularLoc = glGetUniformLocation(vec_shader.vec[0].Program, "light.specular");
         GLint viewPosLoc = glGetUniformLocation(vec_shader.vec[0].Program, "viewPos");
-        glUniform3f(objectColorLoc, 1.0f, 0.5f, 0.31f);
-        glUniform3f(lightColorLoc, 1.0f, 0.5f, 1.0f);
+        GLint ambientLoc = glGetUniformLocation(vec_shader.vec[0].Program, "material.ambient");
+        GLint diffuseLoc = glGetUniformLocation(vec_shader.vec[0].Program, "material.diffuse");
+        GLint specularLoc = glGetUniformLocation(vec_shader.vec[0].Program, "material.specular");
+        GLint shininessLoc = glGetUniformLocation(vec_shader.vec[0].Program, "material.shininess");
+
         glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
+        glUniform3f(lightAmbientLoc, 0.2f, 0.2f, 0.2f); 
+        glUniform3f(lightDiffuseLoc, 0.5f, 0.5f, 0.5f);
+        glUniform3f(lightSpecularLoc, 1.0f, 1.0f, 1.0f);
+
         glUniform3f(viewPosLoc, camera.Position.x, camera.Position.y, camera.Position.z);
+
+        glUniform3f(ambientLoc, 1.0f, 0.5f, 0.31f);
+        glUniform3f(diffuseLoc, 1.0f, 0.5f, 0.31f);
+        glUniform3f(specularLoc, 0.5f, 0.5f, 0.5f);
+        glUniform1f(shininessLoc, 32.0f);
+
+        //PHYSIC{
+
+        GLint spawnPosLoc = glGetUniformLocation(vec_shader.vec[0].Program, "spawnPosition");
+        glUniform3f(spawnPosLoc, light.spawnPosition.x, light.spawnPosition.y, light.spawnPosition.z);
+        GLint biasLoc = glGetUniformLocation(vec_shader.vec[0].Program, "bias");
+        glUniform3f(biasLoc , light.curentPosition.x - light.spawnPosition.x , light.curentPosition.y - light.spawnPosition.y, light.curentPosition.z - light.spawnPosition.z);
+
+        //PHYSIC}
+
 
         // Create camera transformations
         glm::mat4 view;
