@@ -13,11 +13,14 @@ bool keys[1024];
 
 GLfloat deltaTime = 0.0f;	// Time between current frame and last frame
 GLfloat lastFrame = 0.0f;
+//timer time;
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void do_movement();
+
+stack <t_model> stack_of_model;
 
 void main_loop()
 {
@@ -27,20 +30,22 @@ void main_loop()
 
     t_model light;
     light.curent_shader = 0;
-    //model.load_obj("C:/Users/panih/source/repos/Engine/Engine/res/models/VideoShip.obj");
-    light.load_obj("C:/Users/panih/source/repos/Engine/Engine/res/models/cube.obj");
+    light.load_obj("res/models/cube.obj");
     light.setup_mesh();
 
     light.spawnPosition = glm::vec3(0.0f, 0.0f, 0.0f);
     light.curentPosition = light.spawnPosition;
+	light.do_collis(light.collision_model);
+	light.wieght = 500;
+	stack_of_model.push(light);
 
     t_model lamp;
     lamp.curent_shader = 0;
-    lamp.load_obj("C:/Users/panih/source/repos/Engine/Engine/res/models/cube.obj");
+    lamp.load_obj("res/models/cube.obj");
     lamp.setup_mesh();
 
-	vec_shader.load_shader("C:/Users/panih/source/repos/Engine/Engine/res/shaders/light.vs", "C:/Users/panih/source/repos/Engine/Engine/res/shaders/light.frag");
-    vec_shader.load_shader("C:/Users/panih/source/repos/Engine/Engine/res/shaders/lamp.vs", "C:/Users/panih/source/repos/Engine/Engine/res/shaders/lamp.frag");
+	vec_shader.load_shader("res/shaders/light.vs", "res/shaders/light.frag");
+    vec_shader.load_shader("res/shaders/lamp.vs", "res/shaders/lamp.frag");
 
 
     GLuint texture1;
@@ -55,7 +60,7 @@ void main_loop()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     int width, height;
-    unsigned char* image = SOIL_load_image("C:/Users/panih/source/repos/Engine/Engine/res/materials/united.png", &width, &height, 0, SOIL_LOAD_RGB);
+    unsigned char* image = SOIL_load_image("res/materials/united.png", &width, &height, 0, SOIL_LOAD_RGB);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
     glGenerateMipmap(GL_TEXTURE_2D);
     SOIL_free_image_data(image);
@@ -70,7 +75,7 @@ void main_loop()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    image = SOIL_load_image("C:/Users/panih/source/repos/Engine/Engine/res/materials/unitedBlack.png", &width, &height, 0, SOIL_LOAD_RGB);
+    image = SOIL_load_image("res/materials/unitedBlack.png", &width, &height, 0, SOIL_LOAD_RGB);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
     glGenerateMipmap(GL_TEXTURE_2D);
     SOIL_free_image_data(image);
@@ -79,8 +84,9 @@ void main_loop()
 
     while (!glfwWindowShouldClose(window))
     {
+    //  calc_time(time);
         GLfloat currentFrame = glfwGetTime();
-        deltaTime = currentFrame - lastFrame;
+        deltaTime = currentFrame - lastFrame;  
         lastFrame = currentFrame;
 
         glfwPollEvents();
@@ -174,6 +180,8 @@ void main_loop()
         
 
         glfwSwapBuffers(window);
+
+		calc_phys(); // ‰‡ ƒ¿¿¿¿¿¿¿¿¿, Ò˜ËÚ‡ÂÏ ÙËÁËÍÛ
     }
 
 }
