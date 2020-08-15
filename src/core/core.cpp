@@ -42,6 +42,41 @@ void main_loop()
 	vec_shader.load_shader("C:/Users/panih/source/repos/Engine/Engine/res/shaders/light.vs", "C:/Users/panih/source/repos/Engine/Engine/res/shaders/light.frag");
     vec_shader.load_shader("C:/Users/panih/source/repos/Engine/Engine/res/shaders/lamp.vs", "C:/Users/panih/source/repos/Engine/Engine/res/shaders/lamp.frag");
 
+
+    GLuint texture1;
+    GLuint texture2;
+    glGenTextures(1, &texture1);
+    glBindTexture(GL_TEXTURE_2D, texture1);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    int width, height;
+    unsigned char* image = SOIL_load_image("C:/Users/panih/source/repos/Engine/Engine/res/materials/united.png", &width, &height, 0, SOIL_LOAD_RGB);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    SOIL_free_image_data(image);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glGenTextures(1, &texture2);
+    glBindTexture(GL_TEXTURE_2D, texture2);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    image = SOIL_load_image("C:/Users/panih/source/repos/Engine/Engine/res/materials/unitedBlack.png", &width, &height, 0, SOIL_LOAD_RGB);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    SOIL_free_image_data(image);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+
     while (!glfwWindowShouldClose(window))
     {
         GLfloat currentFrame = glfwGetTime();
@@ -60,8 +95,8 @@ void main_loop()
         GLint lightDiffuseLoc = glGetUniformLocation(vec_shader.vec[0].Program, "light.diffuse");
         GLint lightSpecularLoc = glGetUniformLocation(vec_shader.vec[0].Program, "light.specular");
         GLint viewPosLoc = glGetUniformLocation(vec_shader.vec[0].Program, "viewPos");
-        GLint ambientLoc = glGetUniformLocation(vec_shader.vec[0].Program, "material.ambient");
-        GLint diffuseLoc = glGetUniformLocation(vec_shader.vec[0].Program, "material.diffuse");
+        //GLint ambientLoc = glGetUniformLocation(vec_shader.vec[0].Program, "material.ambient");
+        //GLint diffuseLoc = glGetUniformLocation(vec_shader.vec[0].Program, "material.diffuse");
         GLint specularLoc = glGetUniformLocation(vec_shader.vec[0].Program, "material.specular");
         GLint shininessLoc = glGetUniformLocation(vec_shader.vec[0].Program, "material.shininess");
 
@@ -72,8 +107,8 @@ void main_loop()
 
         glUniform3f(viewPosLoc, camera.Position.x, camera.Position.y, camera.Position.z);
 
-        glUniform3f(ambientLoc, 1.0f, 0.5f, 0.31f);
-        glUniform3f(diffuseLoc, 1.0f, 0.5f, 0.31f);
+        //glUniform3f(ambientLoc, 1.0f, 0.5f, 0.31f);
+        //glUniform3f(diffuseLoc, 1.0f, 0.5f, 0.31f);
         glUniform3f(specularLoc, 0.5f, 0.5f, 0.5f);
         glUniform1f(shininessLoc, 32.0f);
 
@@ -101,6 +136,18 @@ void main_loop()
         
         glm::mat4 model (1.0f);
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture1);
+        glUniform1i(glGetUniformLocation(vec_shader.vec[0].Program, "material.diffuse"), 0);
+        
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, texture2);
+        glUniform1i(glGetUniformLocation(vec_shader.vec[0].Program, "material.specular"), 1);
+
+
         
         glBindVertexArray(light.VAO);
         glDrawElements(GL_TRIANGLES, light.tri.size(), GL_UNSIGNED_INT, 0);
