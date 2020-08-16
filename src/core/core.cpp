@@ -28,90 +28,16 @@ void main_loop()
     t_model light;
     light.curent_shader = 0;
     //model.load_obj("C:/Users/panih/source/repos/Engine/Engine/res/models/VideoShip.obj");
-    light.load_obj("C:/Users/panih/source/repos/Engine/Engine/res/models/cube.obj");
+    light.load_obj("C:/Users/Administrator/source/repos/Engine/Engine/res/models/cube.obj");
     light.setup_mesh();
 
     t_model lamp;
     lamp.curent_shader = 0;
-    lamp.load_obj("C:/Users/panih/source/repos/Engine/Engine/res/models/cube.obj");
+    lamp.load_obj("C:/Users/Administrator/source/repos/Engine/Engine/res/models/cube.obj");
     lamp.setup_mesh();
 
-	vec_shader.load_shader("C:/Users/panih/source/repos/Engine/Engine/res/shaders/light.vs", "C:/Users/panih/source/repos/Engine/Engine/res/shaders/light.frag");
-    vec_shader.load_shader("C:/Users/panih/source/repos/Engine/Engine/res/shaders/lamp.vs", "C:/Users/panih/source/repos/Engine/Engine/res/shaders/lamp.frag");
-
-    /*GLfloat vertices[] = {
-        -0.5f, -0.5f, -0.5f,
-         0.5f, -0.5f, -0.5f,
-         0.5f,  0.5f, -0.5f,
-
-         0.5f,  0.5f, -0.5f,
-        -0.5f,  0.5f, -0.5f,
-        -0.5f, -0.5f, -0.5f,
-
-        -0.5f, -0.5f,  0.5f,
-         0.5f, -0.5f,  0.5f,
-         0.5f,  0.5f,  0.5f,
-
-         0.5f,  0.5f,  0.5f,
-        -0.5f,  0.5f,  0.5f,
-        -0.5f, -0.5f,  0.5f,
-
-        -0.5f,  0.5f,  0.5f,
-        -0.5f,  0.5f, -0.5f,
-        -0.5f, -0.5f, -0.5f,
-
-        -0.5f, -0.5f, -0.5f,
-        -0.5f, -0.5f,  0.5f,
-        -0.5f,  0.5f,  0.5f,
-
-         0.5f,  0.5f,  0.5f,
-         0.5f,  0.5f, -0.5f,
-         0.5f, -0.5f, -0.5f,
-
-         0.5f, -0.5f, -0.5f,
-         0.5f, -0.5f,  0.5f,
-         0.5f,  0.5f,  0.5f,
-
-        -0.5f, -0.5f, -0.5f,
-         0.5f, -0.5f, -0.5f,
-         0.5f, -0.5f,  0.5f,
-
-         0.5f, -0.5f,  0.5f,
-        -0.5f, -0.5f,  0.5f,
-        -0.5f, -0.5f, -0.5f,
-
-        -0.5f,  0.5f, -0.5f,
-         0.5f,  0.5f, -0.5f,
-         0.5f,  0.5f,  0.5f,
-
-         0.5f,  0.5f,  0.5f,
-        -0.5f,  0.5f,  0.5f,
-        -0.5f,  0.5f, -0.5f
-    };
-    // First, set the container's VAO (and VBO)
-    GLuint VBO, containerVAO;
-    glGenVertexArrays(1, &containerVAO);
-    glGenBuffers(1, &VBO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    glBindVertexArray(containerVAO);
-    // Position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
-    glEnableVertexAttribArray(0);
-    glBindVertexArray(0);
-
-    // Then, we set the light's VAO (VBO stays the same. After all, the vertices are the same for the light object (also a 3D cube))
-    GLuint lightVAO;
-    glGenVertexArrays(1, &lightVAO);
-    glBindVertexArray(lightVAO);
-    // We only need to bind to the VBO (to link it with glVertexAttribPointer), no need to fill it; the VBO's data already contains all we need.
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    // Set the vertex attributes (only position data for the lamp))
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
-    glEnableVertexAttribArray(0);
-    glBindVertexArray(0);*/
+	vec_shader.load_shader("C:/Users/Administrator/source/repos/Engine/Engine/res/shaders/light.vs", "C:/Users/Administrator/source/repos/Engine/Engine/res/shaders/light.frag");
+    vec_shader.load_shader("C:/Users/Administrator/source/repos/Engine/Engine/res/shaders/lamp.vs", "C:/Users/Administrator/source/repos/Engine/Engine/res/shaders/lamp.frag");
 
     while (!glfwWindowShouldClose(window))
     {
