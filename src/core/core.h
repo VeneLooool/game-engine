@@ -1,6 +1,8 @@
 //#include "../gl/gl.h	"
 #include "../render/model.h"
 #include "../render/camera.h"
+#include "physic/physics.h"
+#include "../ent/timer.h"
 
 void main_loop(); 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
