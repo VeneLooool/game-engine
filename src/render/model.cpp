@@ -2,6 +2,17 @@
 
 //TODO: доделать загрузку объектов когда есть не только вершины, а нормали, текстуры 
 
+void t_model::do_collis(vector<glm::vec3> collision_model) { //нужно что-то по-оригинальнeе придумать, мб просто читать вершины, но тогда усложнится расчет, и оптимизация по хуям пойдет
+	collision_model.push_back(glm::vec3(-0.5, -0.5, -0.5));
+	collision_model.push_back(glm::vec3(0.5, -0.5, -0.5));
+	collision_model.push_back(glm::vec3(0.5, 0.5, -0.5));
+	collision_model.push_back(glm::vec3(-0.5, 0.5, -0.5));
+	collision_model.push_back(glm::vec3(-0.5, -0.5, 0.5));
+	collision_model.push_back(glm::vec3(0.5, -0.5, 0.5));
+	collision_model.push_back(glm::vec3(0.5, 0.5, 0.5));
+	collision_model.push_back(glm::vec3(-0.5, 0.5, 0.5));
+}
+
 void t_model::load_obj(std::string path)
 {
 	fstream file_obj; 
@@ -23,7 +34,7 @@ void t_model::load_obj(std::string path)
 			if (line[0] == 'v' && line[1] == ' ')
 			{
 				float x, y, z;
-				sscanf_s(line.c_str(), "%*s %f %f %f",	//может быть crash из за этого
+				sscanf_s(line.c_str(), "%*s %f %f %f",	//может быть ты мой crash из за этого
 					&x,
 					&y,
 					&z
@@ -34,7 +45,7 @@ void t_model::load_obj(std::string path)
 			else if (line[0] == 'v' && line[1] == 'n' && line[2] == ' ')
 			{
 				float x, y, z;
-				sscanf_s(line.c_str(), "%*s %f %f %f",	//может быть crash из за этого
+				sscanf_s(line.c_str(), "%*s %f %f %f",	//может быть ты мой crash из за этого
 					&x,
 					&y,
 					&z
@@ -44,7 +55,7 @@ void t_model::load_obj(std::string path)
 			else if (line[0] == 'v' && line[1] == 't' && line[2] == ' ')
 			{
 				float x, y;
-				sscanf_s(line.c_str(), "%*s %f %f",	//может быть crash из за этого
+				sscanf_s(line.c_str(), "%*s %f %f",	//может быть ты мой crash из за этого
 					&x,
 					&y
 				);

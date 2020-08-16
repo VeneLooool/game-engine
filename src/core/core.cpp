@@ -181,7 +181,7 @@ void main_loop()
 
         glfwSwapBuffers(window);
 
-		calc_phys(); // да ƒјјјјјјјјј, считаем физику
+		//calc_phys(); // да ƒјјјјјјјјј, считаем физику
     }
 
 }
