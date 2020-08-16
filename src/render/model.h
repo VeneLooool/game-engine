@@ -1,5 +1,6 @@
 #include "shader.h"
 #include "material.h"
+#include "texture.h"
 #include "../include.h"
 
 struct  t_vertex
@@ -9,11 +10,17 @@ struct  t_vertex
 	glm::vec2 text;
 };
 
-struct t_texture 
+/*struct t_texture 
 {
-	unsigned int id;
-	string type;
-};
+	//unsigned int id;
+	//string type;
+public:
+	GLuint texture;
+	GLuint blikMap;
+
+	void load_texture(const char* path);
+	void load_blikMap(const char* path);
+};*/
 
 struct t_model
 {
@@ -23,6 +30,8 @@ public:
 	vector<unsigned int> tri;
 
 	t_material material;
+
+	t_texture texture;
 
 	int curent_shader;
 
