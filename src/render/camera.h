@@ -5,7 +5,7 @@
 
 // GL Includes
 
-#include "C:/Users/Administrator/source/repos/Engine/Engine/src/gl/gl.h"
+#include "../gl/gl.h"
 
 
 // Defines several possible options for camera movement. Used as abstraction to stay away from window-system specific input methods
