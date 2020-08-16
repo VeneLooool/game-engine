@@ -2,7 +2,7 @@
 
 t_shader vec_shader;
 
-glm::vec3 lightPos(0.8f, 1.0f, 1.0f);
+glm::vec3 lightPos(0.8f, 0.8f, 0.8f);
 
 Camera  camera(glm::vec3(0.0f, 0.0f, 3.0f));
 GLfloat lastX = 800 / 2.0;
@@ -96,27 +96,20 @@ void main_loop()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         vec_shader.vec[0].Use();
-        GLint lightPosLoc = glGetUniformLocation(vec_shader.vec[0].Program, "light.position");
-        GLint lightAmbientLoc = glGetUniformLocation(vec_shader.vec[0].Program, "light.ambient");
-        GLint lightDiffuseLoc = glGetUniformLocation(vec_shader.vec[0].Program, "light.diffuse");
-        GLint lightSpecularLoc = glGetUniformLocation(vec_shader.vec[0].Program, "light.specular");
-        GLint viewPosLoc = glGetUniformLocation(vec_shader.vec[0].Program, "viewPos");
-        //GLint ambientLoc = glGetUniformLocation(vec_shader.vec[0].Program, "material.ambient");
-        //GLint diffuseLoc = glGetUniformLocation(vec_shader.vec[0].Program, "material.diffuse");
-        GLint specularLoc = glGetUniformLocation(vec_shader.vec[0].Program, "material.specular");
-        GLint shininessLoc = glGetUniformLocation(vec_shader.vec[0].Program, "material.shininess");
-
-        glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
-        glUniform3f(lightAmbientLoc, 0.2f, 0.2f, 0.2f); 
-        glUniform3f(lightDiffuseLoc, 0.5f, 0.5f, 0.5f);
-        glUniform3f(lightSpecularLoc, 1.0f, 1.0f, 1.0f);
-
-        glUniform3f(viewPosLoc, camera.Position.x, camera.Position.y, camera.Position.z);
-
-        //glUniform3f(ambientLoc, 1.0f, 0.5f, 0.31f);
-        //glUniform3f(diffuseLoc, 1.0f, 0.5f, 0.31f);
-        glUniform3f(specularLoc, 0.5f, 0.5f, 0.5f);
-        glUniform1f(shininessLoc, 32.0f);
+        vec_shader.vec[0].setVec3("viewPos", camera.Position);
+        vec_shader.vec[0].setFloat("material.shininess", 32.0f);
+        vec_shader.vec[0].setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
+        vec_shader.vec[0].setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
+        vec_shader.vec[0].setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
+        vec_shader.vec[0].setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
+        // point light 1
+        vec_shader.vec[0].setVec3("pointLight[0].position", lightPos);
+        vec_shader.vec[0].setVec3("pointLight[0].ambient", 0.05f, 0.05f, 0.05f);
+        vec_shader.vec[0].setVec3("pointLight[0].diffuse", 0.8f, 0.8f, 0.8f);
+        vec_shader.vec[0].setVec3("pointLight[0].specular", 1.0f, 1.0f, 1.0f);
+        vec_shader.vec[0].setFloat("pointLight[0].constant", 1.0f);
+        vec_shader.vec[0].setFloat("pointLight[0].linear", 0.045);
+        vec_shader.vec[0].setFloat("pointLight[0].quadratic", 0.0075);
 
         //PHYSIC{
 
