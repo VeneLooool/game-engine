@@ -80,7 +80,7 @@ void main_loop()
 
         //}
         //PHYSIC 
-
+        glm::vec3 hui;//prosto tak
         glm::mat4 view;
         glm::mat4 projection = glm::perspective(camera.Zoom, (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
 
