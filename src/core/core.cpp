@@ -79,14 +79,16 @@ void main_loop()
         vec_shader.vec[0].setFloat("pointLight[0].linear", 0.045);
         vec_shader.vec[0].setFloat("pointLight[0].quadratic", 0.0075);
 
-        //PHYSIC{
+        //PHYSIC 
+        //{
 
-        GLint spawnPosLoc = glGetUniformLocation(vec_shader.vec[0].Program, "spawnPosition");
-        glUniform3f(spawnPosLoc, light.spawnPosition.x, light.spawnPosition.y, light.spawnPosition.z);
-        GLint biasLoc = glGetUniformLocation(vec_shader.vec[0].Program, "bias");
-        glUniform3f(biasLoc , light.curentPosition.x - light.spawnPosition.x , light.curentPosition.y - light.spawnPosition.y, light.curentPosition.z - light.spawnPosition.z);
+            GLint spawnPosLoc = glGetUniformLocation(vec_shader.vec[0].Program, "spawnPosition");
+            glUniform3f(spawnPosLoc, light.spawnPosition.x, light.spawnPosition.y, light.spawnPosition.z);
+            GLint biasLoc = glGetUniformLocation(vec_shader.vec[0].Program, "bias");
+            glUniform3f(biasLoc, light.curentPosition.x - light.spawnPosition.x, light.curentPosition.y - light.spawnPosition.y, light.curentPosition.z - light.spawnPosition.z);
 
-        //PHYSIC}
+        //}
+        //PHYSIC 
 
 
         // Create camera transformations
