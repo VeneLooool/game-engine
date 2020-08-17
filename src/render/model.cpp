@@ -94,48 +94,6 @@ void t_model::load_obj(std::string path)
 	}
 }
 
-/*void t_texture::load_texture(const char* path)
-{
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	int width, height;
-	unsigned char* image = SOIL_load_image(path, &width, &height, 0, SOIL_LOAD_RGB);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-	glGenerateMipmap(GL_TEXTURE_2D);
-	SOIL_free_image_data(image);
-	glBindTexture(GL_TEXTURE_2D, 0);
-	//   image = SOIL_load_image("res/materials/unitedBlack.png", &width, &height, 0, SOIL_LOAD_RGB); "res/materials/united.png"
-
-}
-
-void t_texture::load_blikMap(const char* path)
-{
-	glGenTextures(1, &blikMap);
-	glBindTexture(GL_TEXTURE_2D, blikMap);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	int width, height;
-	unsigned char* image = SOIL_load_image(path, &width, &height, 0, SOIL_LOAD_RGB);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-	glGenerateMipmap(GL_TEXTURE_2D);
-	SOIL_free_image_data(image);
-	glBindTexture(GL_TEXTURE_2D, 0);
-	//   image = SOIL_load_image("res/materials/unitedBlack.png", &width, &height, 0, SOIL_LOAD_RGB); "res/materials/united.png"
-
-}*/
-
 void t_model::setup_mesh() 
 {
 	glGenVertexArrays(1, &VAO);
@@ -161,12 +119,41 @@ void t_model::setup_mesh()
 	glBindVertexArray(0);
 }
 
-void t_model::draw(Shader shader)
+void t_model::draw_model(Shader& shader, t_model& mod, Camera& camera, glm::mat4& view, glm::mat4& projection)
 {
-	shader.Use();
+	//shader.Use();
+
+	shader.setFloat("material.shininess", shininess);
+	shader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
+	shader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
+	shader.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
+	shader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
+
+	mod.pointLight.load_to_shader(shader, 0);
+
+	view = camera.GetViewMatrix();
+	// Get the uniform locations
+	GLint modelLoc = glGetUniformLocation(shader.Program, "model");
+	GLint viewLoc = glGetUniformLocation(shader.Program, "view");
+	GLint projLoc = glGetUniformLocation(shader.Program, "projection");
+	// Pass the matrices to the shader
+	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+	glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
+	glm::mat4 model(1.0f);
+	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture.texture);
+	glUniform1i(glGetUniformLocation(shader.Program, "material.diffuse"), 0);
+
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, texture.blikMap);
+	glUniform1i(glGetUniformLocation(shader.Program, "material.specular"), 1);
+
+
 
 	glBindVertexArray(VAO);
-	glDrawElements(GL_TRIANGLES, tri.size()*3, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, tri.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 }
 
