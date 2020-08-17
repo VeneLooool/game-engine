@@ -1,6 +1,8 @@
 #include "core.h"
 
 t_shader vec_shader;
+t_model lamp;
+t_model light;
 
 glm::vec3 lightPos(0.8f, 0.8f, 0.8f);
 
@@ -28,10 +30,11 @@ void main_loop()
 
     GLFWwindow* window = create_window(WIDTH, HEIGHT, "Engine");
 
-    t_model light;
+    
     light.curent_shader = 0;
     light.load_obj("res/models/cube.obj");
     light.setup_mesh();
+    light.shininess = 32.0f;
 
     light.spawnPosition = glm::vec3(0.0f, 0.0f, 0.0f);
     light.curentPosition = light.spawnPosition;
@@ -39,10 +42,11 @@ void main_loop()
 	light.wieght = 500;
 	stack_of_model.push(light);
 
-    t_model lamp;
+    
     lamp.curent_shader = 0;
     lamp.load_obj("res/models/cube.obj");
     lamp.setup_mesh();
+    lamp.pointLight.init_pointLight(lightPos, glm::vec3(0.05f, 0.05f, 0.05f), glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3(1.0f, 1.0f, 1.0f), 1.0f, 0.045, 0.0075);
 
 	vec_shader.load_shader("res/shaders/light.vs", "res/shaders/light.frag");
     vec_shader.load_shader("res/shaders/lamp.vs", "res/shaders/lamp.frag");
@@ -65,19 +69,6 @@ void main_loop()
 
         vec_shader.vec[0].Use();
         vec_shader.vec[0].setVec3("viewPos", camera.Position);
-        vec_shader.vec[0].setFloat("material.shininess", 32.0f);
-        vec_shader.vec[0].setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
-        vec_shader.vec[0].setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
-        vec_shader.vec[0].setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
-        vec_shader.vec[0].setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
-        // point light 1
-        vec_shader.vec[0].setVec3("pointLight[0].position", lightPos);
-        vec_shader.vec[0].setVec3("pointLight[0].ambient", 0.05f, 0.05f, 0.05f);
-        vec_shader.vec[0].setVec3("pointLight[0].diffuse", 0.8f, 0.8f, 0.8f);
-        vec_shader.vec[0].setVec3("pointLight[0].specular", 1.0f, 1.0f, 1.0f);
-        vec_shader.vec[0].setFloat("pointLight[0].constant", 1.0f);
-        vec_shader.vec[0].setFloat("pointLight[0].linear", 0.045);
-        vec_shader.vec[0].setFloat("pointLight[0].quadratic", 0.0075);
 
         //PHYSIC{
 
@@ -88,51 +79,22 @@ void main_loop()
 
         //PHYSIC}
 
-
-        // Create camera transformations
         glm::mat4 view;
-        view = camera.GetViewMatrix();
         glm::mat4 projection = glm::perspective(camera.Zoom, (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
-        // Get the uniform locations
-        GLint modelLoc = glGetUniformLocation(vec_shader.vec[0].Program, "model");
-        GLint viewLoc = glGetUniformLocation(vec_shader.vec[0].Program, "view");
-        GLint projLoc = glGetUniformLocation(vec_shader.vec[0].Program, "projection");
-        // Pass the matrices to the shader
-        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-        glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
-        
-        glm::mat4 model (1.0f);
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
+        light.draw_model(vec_shader.vec[0], lamp, camera, view, projection);
 
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, light.texture.texture);
-        glUniform1i(glGetUniformLocation(vec_shader.vec[0].Program, "material.diffuse"), 0);
-        
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, light.texture.blikMap);
-        glUniform1i(glGetUniformLocation(vec_shader.vec[0].Program, "material.specular"), 1);
-
-
-        
-        glBindVertexArray(light.VAO);
-        glDrawElements(GL_TRIANGLES, light.tri.size(), GL_UNSIGNED_INT, 0);
-        glBindVertexArray(0);
-
-
-        // Also draw the lamp object, again binding the appropriate shader
         vec_shader.vec[1].Use();
-        // Get location objects for the matrices on the lamp shader (these could be different on a different shader)
-        modelLoc = glGetUniformLocation(vec_shader.vec[1].Program, "model");
-        viewLoc = glGetUniformLocation(vec_shader.vec[1].Program, "view");
-        projLoc = glGetUniformLocation(vec_shader.vec[1].Program, "projection");
-        // Set matrices
+
+        GLint modelLoc = glGetUniformLocation(vec_shader.vec[1].Program, "model");
+        GLint viewLoc = glGetUniformLocation(vec_shader.vec[1].Program, "view");
+        GLint projLoc = glGetUniformLocation(vec_shader.vec[1].Program, "projection");
+
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
-        model = glm::mat4(1.0f);
+        glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, lightPos);
-        model = glm::scale(model, glm::vec3(0.2f)); // Make it a smaller cube
+        model = glm::scale(model, glm::vec3(0.2f)); 
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
         glBindVertexArray(lamp.VAO);

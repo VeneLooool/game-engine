@@ -1,7 +1,10 @@
 #include "shader.h"
 #include "material.h"
 #include "texture.h"
+#include "light/light.h"
 #include "../include.h"
+#include "camera.h"
+
 
 struct  t_vertex
 {
@@ -9,18 +12,6 @@ struct  t_vertex
 	glm::vec3 norm;
 	glm::vec2 text;
 };
-
-/*struct t_texture 
-{
-	//unsigned int id;
-	//string type;
-public:
-	GLuint texture;
-	GLuint blikMap;
-
-	void load_texture(const char* path);
-	void load_blikMap(const char* path);
-};*/
 
 struct t_model
 {
@@ -33,7 +24,12 @@ public:
 
 	t_texture texture;
 
+	t_dirLight dirLight;
+	t_pointLight pointLight;
+	t_spotLight spotLight;
+
 	int curent_shader;
+	float shininess;
 
 	int wieght;
 	vector<glm::vec3> collision_model;
@@ -46,5 +42,5 @@ public:
 	void load_obj(std::string path);
 	void do_collis(vector<glm::vec3> collision_model);
 	void setup_mesh();
-	void draw(Shader shader);
+	void draw_model(Shader& shader, t_model& mod, Camera& camera, glm::mat4& view, glm::mat4& projection);
 };
