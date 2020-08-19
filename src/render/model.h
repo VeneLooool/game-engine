@@ -13,10 +13,29 @@ struct  t_vertex
 	glm::vec2 text;
 };
 
+/*struct t_texture 
+{
+	//unsigned int id;
+	//string type;
+public:
+	GLuint texture;
+	GLuint blikMap;
+
+	void load_texture(const char* path);
+	void load_blikMap(const char* path);
+};*/
+
+struct phys_properties{
+
+	double wieght;
+	double v0_fall, t0_fall, v_fall, t_fall, h_fall;
+
+};
+
 struct t_model
 {
-
 public:
+
 	vector<t_vertex> vert;
 	vector<unsigned int> tri;
 
@@ -31,7 +50,7 @@ public:
 	int curent_shader;
 	float shininess;
 
-	int wieght;
+	phys_properties physical_properties;
 	vector<glm::vec3> collision_model;
 
 	glm::vec3 spawnPosition;
@@ -40,7 +59,7 @@ public:
 
 	unsigned int VAO, VBO, EBO;
 	void load_obj(std::string path);
-	void do_collis(vector<glm::vec3> collision_model);
+	vector <glm::vec3> do_collis(glm::vec3 curentPosition);
 	void setup_mesh();
 	void draw_model(Shader& shader, t_model& mod, Camera& camera, glm::mat4& view, glm::mat4& projection);
 };

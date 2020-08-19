@@ -2,15 +2,20 @@
 
 //TODO: доделать загрузку объектов когда есть не только вершины, а нормали, текстуры 
 
-void t_model::do_collis(vector<glm::vec3> collision_model) { //нужно что-то по-оригинальнeе придумать, мб просто читать вершины, но тогда усложнитс€ расчет, и оптимизаци€ по ху€м пойдет
-	collision_model.push_back(glm::vec3(-0.5, -0.5, -0.5));
-	collision_model.push_back(glm::vec3(0.5, -0.5, -0.5));
-	collision_model.push_back(glm::vec3(0.5, 0.5, -0.5));
-	collision_model.push_back(glm::vec3(-0.5, 0.5, -0.5));
-	collision_model.push_back(glm::vec3(-0.5, -0.5, 0.5));
-	collision_model.push_back(glm::vec3(0.5, -0.5, 0.5));
-	collision_model.push_back(glm::vec3(0.5, 0.5, 0.5));
-	collision_model.push_back(glm::vec3(-0.5, 0.5, 0.5));
+vector<glm::vec3> t_model::do_collis(glm::vec3 curentPosition) { //нужно что-то по-оригинальнeе придумать, мб просто читать вершины, но тогда усложнитс€ расчет, и оптимизаци€ по ху€м пойдет
+	
+	vector <glm::vec3> collision_model;
+
+	collision_model.push_back(glm::vec3(curentPosition.x - 0.5, curentPosition.y - 0.5, curentPosition.z - 0.5));
+	collision_model.push_back(glm::vec3(curentPosition.x + 0.5, curentPosition.y - 0.5, curentPosition.z - 0.5));
+	collision_model.push_back(glm::vec3(curentPosition.x + 0.5, curentPosition.y + 0.5, curentPosition.z - 0.5));
+	collision_model.push_back(glm::vec3(curentPosition.x - 0.5, curentPosition.y + 0.5, curentPosition.z - 0.5));
+	collision_model.push_back(glm::vec3(curentPosition.x - 0.5, curentPosition.y - 0.5, curentPosition.z + 0.5));
+	collision_model.push_back(glm::vec3(curentPosition.x + 0.5, curentPosition.y - 0.5, curentPosition.z + 0.5));
+	collision_model.push_back(glm::vec3(curentPosition.x + 0.5, curentPosition.y + 0.5, curentPosition.z + 0.5));
+	collision_model.push_back(glm::vec3(curentPosition.x - 0.5, curentPosition.y + 0.5, curentPosition.z + 0.5));
+
+	return collision_model;
 }
 
 void t_model::load_obj(std::string path)

@@ -13,9 +13,7 @@ GLfloat lastY = 600 / 2.0;
 int WIDTH = 800, HEIGHT = 600; 
 bool keys[1024];
 
-GLfloat deltaTime = 0.0f;	// Time between current frame and last frame
-GLfloat lastFrame = 0.0f;
-//timer time;
+timer time;
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -23,6 +21,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void do_movement();
 
 stack <t_model> stack_of_model;
+stack <t_model> stack_of_moving_model;
 
 void main_loop()
 {
@@ -38,12 +37,15 @@ void main_loop()
 
     light.spawnPosition = glm::vec3(0.0f, 0.0f, 0.0f);
     light.curentPosition = light.spawnPosition;
-	light.do_collis(light.collision_model);
-	light.wieght = 500;
+	
+	light.collision_model = light.do_collis(light.curentPosition);
 	stack_of_model.push(light);
 
-    
-    lamp.curent_shader = 0;
+	light.physical_properties.wieght = 500.0;
+
+    t_model lamp;
+  
+	lamp.curent_shader = 0;
     lamp.load_obj("res/models/cube.obj");
     lamp.setup_mesh();
     lamp.pointLight.init_pointLight(lightPos, glm::vec3(0.05f, 0.05f, 0.05f), glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3(1.0f, 1.0f, 1.0f), 1.0f, 0.045, 0.0075);
@@ -56,10 +58,7 @@ void main_loop()
 
     while (!glfwWindowShouldClose(window))
     {
-    //  calc_time(time);
-        GLfloat currentFrame = glfwGetTime();
-        deltaTime = currentFrame - lastFrame;  
-        lastFrame = currentFrame;
+        time.calc_time();
 
         glfwPollEvents();
         do_movement();
@@ -105,6 +104,7 @@ void main_loop()
 
         glfwSwapBuffers(window);
 
+		light.collision_model = light.do_collis(light.curentPosition);
 		//calc_phys(); // ‰‡ ƒ¿¿¿¿¿¿¿¿¿, Ò˜ËÚ‡ÂÏ ÙËÁËÍÛ
     }
 
@@ -127,13 +127,13 @@ void do_movement()
 {
     // Camera controls
     if (keys[GLFW_KEY_W])
-        camera.ProcessKeyboard(FORWARD, deltaTime);
+        camera.ProcessKeyboard(FORWARD, time.delta_sec);
     if (keys[GLFW_KEY_S])
-        camera.ProcessKeyboard(BACKWARD, deltaTime);
+        camera.ProcessKeyboard(BACKWARD, time.delta_sec);
     if (keys[GLFW_KEY_A])
-        camera.ProcessKeyboard(LEFT, deltaTime);
+        camera.ProcessKeyboard(LEFT, time.delta_sec);
     if (keys[GLFW_KEY_D])
-        camera.ProcessKeyboard(RIGHT, deltaTime);
+        camera.ProcessKeyboard(RIGHT, time.delta_sec);
 }
 
 bool firstMouse = true;
