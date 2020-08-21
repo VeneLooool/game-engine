@@ -10,8 +10,12 @@ class Shader
 public:
     GLuint Program;
     unsigned int ID;
+    unsigned int idV;
+    vector<unsigned int> depend_model;
+    const GLchar* strVs;
+    const GLchar* strFrag;
 
-    Shader(const GLchar* vertexPath, const GLchar* fragmentPath)
+    Shader(const GLchar* vertexPath, const GLchar* fragmentPath, int& suc)
     {
         std::string vertexCode;
         std::string fragmentCode;
@@ -88,6 +92,7 @@ public:
         {
             glGetProgramInfoLog(this->Program, 512, NULL, infoLog);
             std::cout << "ERROR::SHADER::PROGRAM::LINKED_FAILED:\n" << infoLog << std::endl;
+            suc = -1;
         }
 
         glDeleteShader(vertex);
@@ -163,7 +168,7 @@ public:
     vector<Shader> vec;
 
     void push_shader(Shader link);
-    void load_shader(const GLchar* strVs, const GLchar* strFrag);
+    int load_shader(const GLchar* strVs, const GLchar* strFrag);
 };
 
 #endif 

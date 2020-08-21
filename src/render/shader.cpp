@@ -4,8 +4,15 @@ void t_shader::push_shader(Shader link) {
 	vec.push_back(link);
 }
 
-void t_shader::load_shader(const GLchar* strVs, const GLchar* strFrag) {
-	Shader ourShader(strVs, strFrag);
+int t_shader::load_shader(const GLchar* strVs, const GLchar* strFrag) {
+	int success = 0;
+	Shader ourShader(strVs, strFrag, success);
 
-	push_shader(ourShader);
+	ourShader.idV = vec.size();
+	ourShader.strVs = strVs;
+	ourShader.strFrag = strFrag;
+	
+	if(success!=-1)
+		push_shader(ourShader);
+	return(success);
 }

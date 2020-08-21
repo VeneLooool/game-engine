@@ -1,12 +1,11 @@
 #include "core.h"
 
-t_shader vec_shader;
-t_model lamp;
-t_model light;
+t_scene scene;
 
 glm::vec3 lightPos(0.8f, 0.8f, 0.8f);
 
 Camera  camera(glm::vec3(0.0f, 0.0f, 3.0f));
+
 GLfloat lastX = 800 / 2.0;
 GLfloat lastY = 600 / 2.0;
 
@@ -30,7 +29,7 @@ void main_loop()
     GLFWwindow* window = create_window(WIDTH, HEIGHT, "Engine");
 
     
-    light.curent_shader = 0;
+    /*light.curent_shader = 0;
     light.load_obj("res/models/cube.obj");
     light.setup_mesh();
     light.shininess = 32.0f;
@@ -54,7 +53,24 @@ void main_loop()
     vec_shader.load_shader("res/shaders/lamp.vs", "res/shaders/lamp.frag");
 
     light.texture.load_texture("res/materials/united.png");
-    light.texture.load_blikMap("res/materials/unitedBlack.png");
+    light.texture.load_blikMap("res/materials/unitedBlack.png");*/
+
+    /*shader.setFloat("material.shininess", shininess);
+    shader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
+    shader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
+    shader.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
+    shader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);*/
+
+    scene.Model.add_3d_model(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), "res/models/cube.obj", 32.0f, -1,
+        "res/shaders/light.vs", "res/shaders/light.frag", scene.Shaders, "res/materials/united.png", "res/materials/unitedBlack.png");
+    scene.Model.add_3d_model(glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.2f, 0.2f, 0.2f), "res/models/cube.obj", 0.0f, -1,
+        "res/shaders/lamp.vs", "res/shaders/lamp.frag", scene.Shaders, "", "");
+
+    scene.Light.add_dirLight(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(-0.2f, -1.0f, -0.3f), 
+        glm::vec3(0.05f, 0.05f, 0.05f), glm::vec3(0.4f, 0.4f, 0.4f), glm::vec3(0.5f, 0.5f, 0.5f));
+    scene.Light.add_pointLight(glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.05f, 0.05f, 0.05f), 
+        glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3(1.0f, 1.0f, 1.0f), 1.0f, 0.045, 0.0075);
+
 
     while (!glfwWindowShouldClose(window))
     {
@@ -66,7 +82,7 @@ void main_loop()
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        vec_shader.vec[0].Use();
+        /*vec_shader.vec[0].Use();
         vec_shader.vec[0].setVec3("viewPos", camera.Position);
 
         //PHYSIC 
@@ -104,8 +120,14 @@ void main_loop()
 
         glfwSwapBuffers(window);
 
-		light.collision_model = light.do_collis(light.curentPosition);
+		light.collision_model = light.do_collis(light.curentPosition);*/
+
+
+        scene.draw_scene(camera, WIDTH, HEIGHT);
+
 		//calc_phys(); // ‰‡ ƒ¿¿¿¿¿¿¿¿¿, Ò˜ËÚ‡ÂÏ ÙËÁËÍÛ
+
+        glfwSwapBuffers(window);
     }
 
 }

@@ -1,9 +1,10 @@
 #include "shader.h"
 #include "material.h"
 #include "texture.h"
-#include "light/light.h"
 #include "../include.h"
 #include "camera.h"
+#include "../core/physic/transform.h"
+
 
 
 struct  t_vertex
@@ -13,18 +14,6 @@ struct  t_vertex
 	glm::vec2 text;
 };
 
-/*struct t_texture 
-{
-	//unsigned int id;
-	//string type;
-public:
-	GLuint texture;
-	GLuint blikMap;
-
-	void load_texture(const char* path);
-	void load_blikMap(const char* path);
-};*/
-
 struct phys_properties{
 
 	double wieght;
@@ -32,9 +21,11 @@ struct phys_properties{
 
 };
 
-struct t_model
+struct t_3d_model
 {
 public:
+	unsigned int ID;
+	t_transform transform;
 
 	vector<t_vertex> vert;
 	vector<unsigned int> tri;
@@ -43,23 +34,29 @@ public:
 
 	t_texture texture;
 
-	t_dirLight dirLight;
-	t_pointLight pointLight;
-	t_spotLight spotLight;
-
 	int curent_shader;
 	float shininess;
 
 	phys_properties physical_properties;
 	vector<glm::vec3> collision_model;
 
-	glm::vec3 spawnPosition;
-	glm::vec3 curentPosition;
-	glm::vec3 vector_moving;
+	//glm::vec3 spawnPosition; //убрать 
+	//glm::vec3 curentPosition; //убрать 
+	glm::vec3 vector_moving; //убрать 
 
 	unsigned int VAO, VBO, EBO;
-	void load_obj(std::string path);
-	vector <glm::vec3> do_collis(glm::vec3 curentPosition);
+
 	void setup_mesh();
-	void draw_model(Shader& shader, t_model& mod, Camera& camera, glm::mat4& view, glm::mat4& projection);
+	void load_obj(std::string path);
+
+	vector <glm::vec3> do_collis(glm::vec3 curentPosition);
+	void draw_model(Shader& shader, t_3d_model& mod, Camera& camera, glm::mat4& view, glm::mat4& projection);
+};
+
+struct t_model {
+public:
+	vector<t_3d_model> model_3d;
+
+	void add_3d_model(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, string obj_path, float shininess, unsigned int curent_shader, const GLchar* strVs, const GLchar* strFrag, 
+						t_shader& vShader, const char* texture_path, const char* blikMap_path);
 };

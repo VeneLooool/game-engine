@@ -1,9 +1,14 @@
 #include "../include.h"
+//#include "light/light.h"
+#include "../core/physic/physics.h"
 
 struct t_scene
 {
 public:
-	vector<unsigned int> light_scene;
-	vector<unsigned int> model_scene;
-	vector<unsigned int> shader_scene;
+	t_light Light;
+	t_model Model;
+	t_shader Shaders;
+	//Camera MainCamera;
+
+	void draw_scene(Camera& camera, int WIDTH, int HEIGHT);
 };

@@ -1,16 +1,14 @@
 #include "physics.h"
-#include "../../render/model.h"
-#include "../../ent/timer.h"
 
-void start_moving(stack <t_model> stack_of_model, stack <t_model> stack_of_moving_model, timer time) {               // проверка начала какого-то движения и занесение в обрабатываемый далее стек
+void start_moving(stack <t_3d_model>& stack_of_model, stack <t_3d_model>& stack_of_moving_model, timer time) {               // проверка начала какого-то движения и занесение в обрабатываемый далее стек
 	
-	stack <t_model> dop_stack_of_model = stack_of_model;
-	t_model model;
+	stack <t_3d_model> dop_stack_of_model = stack_of_model;
+	t_3d_model model;
 
 	while (!dop_stack_of_model.empty()) {
 
 		model = dop_stack_of_model.top();
-		stack_of_moving_model.pop(model);
+		stack_of_moving_model.pop();
 
 		model.physical_properties.v0_fall = 0.0;                       // определение начальных состояний падения
 		time.calc_time();
@@ -22,17 +20,17 @@ void start_moving(stack <t_model> stack_of_model, stack <t_model> stack_of_movin
 
 }
 //
-void attraction(stack <t_model> stack_of_model, stack <t_model> stack_of_moving_model) {                         // обработка столкновений, запрет движения
+void attraction(stack <t_3d_model>& stack_of_model, stack <t_3d_model>& stack_of_moving_model) {                         // обработка столкновений, запрет движения
 
-	stack <t_model> dop_stack_of_model = stack_of_moving_model;
+	stack <t_3d_model> dop_stack_of_model = stack_of_moving_model;
 
 }
 
-void gravity(stack <t_model> stack_of_moving_model) {                                               // обработка гравитации (пока что просто падения вниз)
+void gravity(stack <t_3d_model>& stack_of_moving_model) {                                               // обработка гравитации (пока что просто падения вниз)
 	
 	timer time;
-	stack <t_model> dop_stack_of_model = stack_of_moving_model;
-	t_model model;
+	stack <t_3d_model> dop_stack_of_model = stack_of_moving_model;
+	t_3d_model model;
  
 	while (!dop_stack_of_model.empty()) {
 
@@ -53,6 +51,6 @@ void impulse() {                                               // расчет импульс
 
 }
 
-void calc_phys(stack <t_model> stack_of_model) {                 // типа main, в котором будут выполняться все функции, хз надо ли, но навсякий
+void calc_phys(stack <t_3d_model>& stack_of_model) {                 // типа main, в котором будут выполняться все функции, хз надо ли, но навсякий
 	
 }
