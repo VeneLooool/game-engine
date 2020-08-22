@@ -1,19 +1,18 @@
 #include "core.h"
 
-t_shader vec_shader;
+t_scene scene;
 
-glm::vec3 lightPos(0.8f, 1.0f, 1.0f);
+glm::vec3 lightPos(0.8f, 0.8f, 0.8f);
 
 Camera  camera(glm::vec3(0.0f, 0.0f, 3.0f));
+
 GLfloat lastX = 800 / 2.0;
 GLfloat lastY = 600 / 2.0;
 
 int WIDTH = 800, HEIGHT = 600; 
 bool keys[1024];
 
-GLfloat deltaTime = 0.0f;	// Time between current frame and last frame
-GLfloat lastFrame = 0.0f;
-//timer time;
+timer time;
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -21,6 +20,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void do_movement();
 
 stack <t_model> stack_of_model;
+stack <t_model> stack_of_moving_model;
 
 void main_loop()
 {
@@ -28,66 +28,53 @@ void main_loop()
 
     GLFWwindow* window = create_window(WIDTH, HEIGHT, "Engine");
 
-    t_model light;
-    light.curent_shader = 0;
+    
+    /*light.curent_shader = 0;
     light.load_obj("res/models/cube.obj");
     light.setup_mesh();
+    light.shininess = 32.0f;
 
     light.spawnPosition = glm::vec3(0.0f, 0.0f, 0.0f);
     light.curentPosition = light.spawnPosition;
-	light.do_collis(light.collision_model);
-	light.wieght = 500;
+	
+	light.collision_model = light.do_collis(light.curentPosition);
 	stack_of_model.push(light);
 
+	light.physical_properties.wieght = 500.0;
+
     t_model lamp;
-    lamp.curent_shader = 0;
+  
+	lamp.curent_shader = 0;
     lamp.load_obj("res/models/cube.obj");
     lamp.setup_mesh();
+    lamp.pointLight.init_pointLight(lightPos, glm::vec3(0.05f, 0.05f, 0.05f), glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3(1.0f, 1.0f, 1.0f), 1.0f, 0.045, 0.0075);
 
 	vec_shader.load_shader("res/shaders/light.vs", "res/shaders/light.frag");
     vec_shader.load_shader("res/shaders/lamp.vs", "res/shaders/lamp.frag");
 
+    light.texture.load_texture("res/materials/united.png");
+    light.texture.load_blikMap("res/materials/unitedBlack.png");*/
 
-    GLuint texture1;
-    GLuint texture2;
-    glGenTextures(1, &texture1);
-    glBindTexture(GL_TEXTURE_2D, texture1);
+    /*shader.setFloat("material.shininess", shininess);
+    shader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
+    shader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
+    shader.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
+    shader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);*/
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    scene.Model.add_3d_model(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), "res/models/cube.obj", 32.0f, -1,
+        "res/shaders/light.vs", "res/shaders/light.frag", scene.Shaders, "res/materials/united.png", "res/materials/unitedBlack.png");
+    scene.Model.add_3d_model(glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.2f, 0.2f, 0.2f), "res/models/cube.obj", 0.0f, -1,
+        "res/shaders/lamp.vs", "res/shaders/lamp.frag", scene.Shaders, "", "");
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    int width, height;
-    unsigned char* image = SOIL_load_image("res/materials/united.png", &width, &height, 0, SOIL_LOAD_RGB);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-    glGenerateMipmap(GL_TEXTURE_2D);
-    SOIL_free_image_data(image);
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    glGenTextures(1, &texture2);
-    glBindTexture(GL_TEXTURE_2D, texture2);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    image = SOIL_load_image("res/materials/unitedBlack.png", &width, &height, 0, SOIL_LOAD_RGB);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-    glGenerateMipmap(GL_TEXTURE_2D);
-    SOIL_free_image_data(image);
-    glBindTexture(GL_TEXTURE_2D, 0);
+    scene.Light.add_dirLight(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(-0.2f, -1.0f, -0.3f), 
+        glm::vec3(0.05f, 0.05f, 0.05f), glm::vec3(0.4f, 0.4f, 0.4f), glm::vec3(0.5f, 0.5f, 0.5f));
+    scene.Light.add_pointLight(glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.05f, 0.05f, 0.05f), 
+        glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3(1.0f, 1.0f, 1.0f), 1.0f, 0.045, 0.0075);
 
 
     while (!glfwWindowShouldClose(window))
     {
-    //  calc_time(time);
-        GLfloat currentFrame = glfwGetTime();
-        deltaTime = currentFrame - lastFrame;  
-        lastFrame = currentFrame;
+        time.calc_time();
 
         glfwPollEvents();
         do_movement();
@@ -95,83 +82,35 @@ void main_loop()
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        vec_shader.vec[0].Use();
-        GLint lightPosLoc = glGetUniformLocation(vec_shader.vec[0].Program, "light.position");
-        GLint lightAmbientLoc = glGetUniformLocation(vec_shader.vec[0].Program, "light.ambient");
-        GLint lightDiffuseLoc = glGetUniformLocation(vec_shader.vec[0].Program, "light.diffuse");
-        GLint lightSpecularLoc = glGetUniformLocation(vec_shader.vec[0].Program, "light.specular");
-        GLint viewPosLoc = glGetUniformLocation(vec_shader.vec[0].Program, "viewPos");
-        //GLint ambientLoc = glGetUniformLocation(vec_shader.vec[0].Program, "material.ambient");
-        //GLint diffuseLoc = glGetUniformLocation(vec_shader.vec[0].Program, "material.diffuse");
-        GLint specularLoc = glGetUniformLocation(vec_shader.vec[0].Program, "material.specular");
-        GLint shininessLoc = glGetUniformLocation(vec_shader.vec[0].Program, "material.shininess");
+        /*vec_shader.vec[0].Use();
+        vec_shader.vec[0].setVec3("viewPos", camera.Position);
 
-        glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
-        glUniform3f(lightAmbientLoc, 0.2f, 0.2f, 0.2f); 
-        glUniform3f(lightDiffuseLoc, 0.5f, 0.5f, 0.5f);
-        glUniform3f(lightSpecularLoc, 1.0f, 1.0f, 1.0f);
+        //PHYSIC 
+        //{
 
-        glUniform3f(viewPosLoc, camera.Position.x, camera.Position.y, camera.Position.z);
+            GLint spawnPosLoc = glGetUniformLocation(vec_shader.vec[0].Program, "spawnPosition");
+            glUniform3f(spawnPosLoc, light.spawnPosition.x, light.spawnPosition.y, light.spawnPosition.z);
+            GLint biasLoc = glGetUniformLocation(vec_shader.vec[0].Program, "bias");
+            glUniform3f(biasLoc, light.curentPosition.x - light.spawnPosition.x, light.curentPosition.y - light.spawnPosition.y, light.curentPosition.z - light.spawnPosition.z);
 
-        //glUniform3f(ambientLoc, 1.0f, 0.5f, 0.31f);
-        //glUniform3f(diffuseLoc, 1.0f, 0.5f, 0.31f);
-        glUniform3f(specularLoc, 0.5f, 0.5f, 0.5f);
-        glUniform1f(shininessLoc, 32.0f);
-
-        //PHYSIC{
-
-        GLint spawnPosLoc = glGetUniformLocation(vec_shader.vec[0].Program, "spawnPosition");
-        glUniform3f(spawnPosLoc, light.spawnPosition.x, light.spawnPosition.y, light.spawnPosition.z);
-        GLint biasLoc = glGetUniformLocation(vec_shader.vec[0].Program, "bias");
-        glUniform3f(biasLoc , light.curentPosition.x - light.spawnPosition.x , light.curentPosition.y - light.spawnPosition.y, light.curentPosition.z - light.spawnPosition.z);
-
-        //PHYSIC}
-
-
-        // Create camera transformations
+        //}
+        //PHYSIC 
         glm::mat4 view;
-        view = camera.GetViewMatrix();
         glm::mat4 projection = glm::perspective(camera.Zoom, (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
-        // Get the uniform locations
-        GLint modelLoc = glGetUniformLocation(vec_shader.vec[0].Program, "model");
-        GLint viewLoc = glGetUniformLocation(vec_shader.vec[0].Program, "view");
-        GLint projLoc = glGetUniformLocation(vec_shader.vec[0].Program, "projection");
-        // Pass the matrices to the shader
-        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-        glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
-        
-        glm::mat4 model (1.0f);
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
+        light.draw_model(vec_shader.vec[0], lamp, camera, view, projection);
 
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture1);
-        glUniform1i(glGetUniformLocation(vec_shader.vec[0].Program, "material.diffuse"), 0);
-        
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, texture2);
-        glUniform1i(glGetUniformLocation(vec_shader.vec[0].Program, "material.specular"), 1);
-
-
-        
-        glBindVertexArray(light.VAO);
-        glDrawElements(GL_TRIANGLES, light.tri.size(), GL_UNSIGNED_INT, 0);
-        glBindVertexArray(0);
-
-
-        // Also draw the lamp object, again binding the appropriate shader
         vec_shader.vec[1].Use();
-        // Get location objects for the matrices on the lamp shader (these could be different on a different shader)
-        modelLoc = glGetUniformLocation(vec_shader.vec[1].Program, "model");
-        viewLoc = glGetUniformLocation(vec_shader.vec[1].Program, "view");
-        projLoc = glGetUniformLocation(vec_shader.vec[1].Program, "projection");
-        // Set matrices
+
+        GLint modelLoc = glGetUniformLocation(vec_shader.vec[1].Program, "model");
+        GLint viewLoc = glGetUniformLocation(vec_shader.vec[1].Program, "view");
+        GLint projLoc = glGetUniformLocation(vec_shader.vec[1].Program, "projection");
+
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
-        model = glm::mat4(1.0f);
+        glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, lightPos);
-        model = glm::scale(model, glm::vec3(0.2f)); // Make it a smaller cube
+        model = glm::scale(model, glm::vec3(0.2f)); 
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
         glBindVertexArray(lamp.VAO);
@@ -181,7 +120,14 @@ void main_loop()
 
         glfwSwapBuffers(window);
 
-		calc_phys(); // ‰‡ ƒ¿¿¿¿¿¿¿¿¿, Ò˜ËÚ‡ÂÏ ÙËÁËÍÛ
+		light.collision_model = light.do_collis(light.curentPosition);*/
+
+
+        scene.draw_scene(camera, WIDTH, HEIGHT);
+
+		//calc_phys(); // ‰‡ ƒ¿¿¿¿¿¿¿¿¿, Ò˜ËÚ‡ÂÏ ÙËÁËÍÛ
+
+        glfwSwapBuffers(window);
     }
 
 }
@@ -203,13 +149,13 @@ void do_movement()
 {
     // Camera controls
     if (keys[GLFW_KEY_W])
-        camera.ProcessKeyboard(FORWARD, deltaTime);
+        camera.ProcessKeyboard(FORWARD, time.delta_sec);
     if (keys[GLFW_KEY_S])
-        camera.ProcessKeyboard(BACKWARD, deltaTime);
+        camera.ProcessKeyboard(BACKWARD, time.delta_sec);
     if (keys[GLFW_KEY_A])
-        camera.ProcessKeyboard(LEFT, deltaTime);
+        camera.ProcessKeyboard(LEFT, time.delta_sec);
     if (keys[GLFW_KEY_D])
-        camera.ProcessKeyboard(RIGHT, deltaTime);
+        camera.ProcessKeyboard(RIGHT, time.delta_sec);
 }
 
 bool firstMouse = true;

@@ -1,10 +1,9 @@
 #include "timer.h"
 
-void calc_time(timer time) {
+void timer::calc_time() {
 
-	GLfloat current_frame;
+	curr_sec = glfwGetTime();
+	delta_sec = curr_sec - last_sec;
+	last_sec = curr_sec;
 
-	current_frame = glfwGetTime();
-	time.delta_sec = current_frame - time.last_sec;
-	time.last_sec = current_frame;
 }

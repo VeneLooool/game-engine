@@ -2,9 +2,13 @@
 
 struct t_material
 {
-	float link_shader;
+public:
+	unsigned int shaderID;
+	string shader_name;
 	glm::vec3 ambient;
 	glm::vec3 diffuse;
 	glm::vec3 specular;
 	float shininess;
+
+	void load_material();
 };
