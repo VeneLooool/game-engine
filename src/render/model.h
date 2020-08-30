@@ -40,10 +40,6 @@ public:
 	phys_properties physical_properties;
 	vector<glm::vec3> collision_model;
 
-	//glm::vec3 spawnPosition; //убрать 
-	//glm::vec3 curentPosition; //убрать 
-	glm::vec3 vector_moving; //убрать 
-
 	unsigned int VAO, VBO, EBO;
 
 	void setup_mesh();
