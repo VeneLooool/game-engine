@@ -2,6 +2,9 @@
 
 void t_scene::draw_scene(Camera& camera, int WIDTH, int HEIGHT)
 {
+	glm::mat4 view = camera.GetViewMatrix();
+	glm::mat4 projection = glm::perspective(camera.Zoom, (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
+
 	for (int curShader = 0; curShader < Shaders.vec.size(); curShader++)
 	{
 		Shaders.vec[curShader].Use();
@@ -16,9 +19,6 @@ void t_scene::draw_scene(Camera& camera, int WIDTH, int HEIGHT)
 		{
 			Light.dirLight[curDirectlight].load_to_shader(Shaders.vec[curShader], curDirectlight);
 		}
-
-		glm::mat4 view = camera.GetViewMatrix();
-		glm::mat4 projection = glm::perspective(camera.Zoom, (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
 
 		for (int curModel = 0; curModel < Shaders.vec[curShader].depend_model.size(); curModel++)
 		{
@@ -52,4 +52,5 @@ void t_scene::draw_scene(Camera& camera, int WIDTH, int HEIGHT)
 		}
 
 	}
+	SkyBox.drawSkybox(view, projection);
 }
