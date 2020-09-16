@@ -17,6 +17,9 @@
 #include "../include/glm/glm/glm.hpp"
 
 
+#include "../include/stb_image.h"
+
+
 
 using namespace std;
 

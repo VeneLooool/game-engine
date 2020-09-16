@@ -3,7 +3,7 @@
 //#include "physic/physics.h"
 //#include "../ent/timer.h"
 #include "../render/scene.h"
-#include "../include_physic.h"
+//#include "../include_physic.h"
 
 void main_loop(); 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
