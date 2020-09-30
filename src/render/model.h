@@ -7,21 +7,22 @@
 
 
 
-struct  t_vertex
+class  t_vertex
 {
+public:
 	glm::vec3 pos;
 	glm::vec3 norm;
 	glm::vec2 text;
 };
 
-struct phys_properties{
-
+class phys_properties{
+public:
 	double wieght;
 	double v0_fall, t0_fall, v_fall, t_fall, h_fall;
 
 };
 
-struct t_3d_model
+class t_3d_model
 {
 public:
 	unsigned int ID;
@@ -49,7 +50,7 @@ public:
 	void draw_model(Shader& shader, t_3d_model& mod, Camera& camera, glm::mat4& view, glm::mat4& projection);
 };
 
-struct t_model {
+class t_model {
 public:
 	vector<t_3d_model> model_3d;
 

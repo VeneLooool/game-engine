@@ -1,6 +1,7 @@
 #include "../include.h"
 
-struct timer{
+class timer{
+public:
 
 	GLfloat delta_sec;
 	GLfloat sec;

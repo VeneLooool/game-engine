@@ -3,7 +3,7 @@
 #include "../core/physic/physics.h"
 #include "light/skybox.h"
 
-struct t_scene
+class t_scene
 {
 public:
 	t_light Light;

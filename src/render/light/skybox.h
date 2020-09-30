@@ -1,7 +1,7 @@
 #include "../../include.h"
 #include "../shader.h"
 
-struct t_skybox
+class t_skybox
 {
 public:
 	vector<Shader> shader;

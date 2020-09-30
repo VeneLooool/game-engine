@@ -1,6 +1,6 @@
 #include "../include.h"
 
-struct t_texture
+class t_texture
 {
 public:
 	GLuint texture;

@@ -1,6 +1,6 @@
 #include "../include.h"
 
-struct t_material
+class t_material
 {
 public:
 	unsigned int shaderID;

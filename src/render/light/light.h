@@ -1,7 +1,7 @@
 #include "../../include.h"
 #include "../model.h"
 
-struct t_dirLight 
+class t_dirLight 
 {
 public:
     unsigned int ID;
@@ -16,7 +16,7 @@ public:
     void load_to_shader(Shader& shader, unsigned int curent_id);
 };
 
-struct t_pointLight
+class t_pointLight
 {
 public:
     unsigned int ID;
@@ -36,7 +36,7 @@ public:
     void load_to_shader(Shader& shader, unsigned int curent_id);
 };
 
-struct t_spotLight
+class t_spotLight
 {
 public:
     unsigned int ID;
@@ -60,7 +60,7 @@ public:
     void load_to_shader(Shader& shader, unsigned int curent_id);
 };
 
-struct t_light
+class t_light
 {
 public:
     vector<t_dirLight> dirLight;
