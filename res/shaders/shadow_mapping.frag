@@ -54,10 +54,10 @@ in VS_OUT {
     vec4 FragPosLightSpace;
 } fs_in;
 
-uniform sampler2D shadowMap;
 uniform vec3 lightPos;
 
 uniform Material material;
+uniform sampler2D shadowMap;
 uniform PointLight pointLight[NR_POINT_LIGHTS];
 uniform vec3 viewPos;
 uniform DirLight dirLight;

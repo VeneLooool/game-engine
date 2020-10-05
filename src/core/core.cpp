@@ -12,6 +12,9 @@ GLfloat lastY = 600 / 2.0;
 int WIDTH = 800, HEIGHT = 600; 
 bool keys[1024];
 
+const unsigned int SCR_WIDTH = 800;
+const unsigned int SCR_HEIGHT = 600;
+
 timer time;
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
@@ -39,7 +42,7 @@ void main_loop()
     scene.Model.add_3d_model(glm::vec3(-0.8f, 0.8f, -0.8f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.2f, 0.2f, 0.2f), "res/models/cube.obj", 0.0f, -1,
         "res/shaders/lamp.vs", "res/shaders/lamp.frag", scene.Shaders, "", "");
     scene.Model.add_3d_model(glm::vec3(0.0f, -1.5f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(20.0f, 0.2f, 20.0f), "res/models/plane.obj", 32.0f, -1,
-        "res/shaders/light.vs", "res/shaders/light.frag", scene.Shaders, "res/materials/united.png", "");
+        "res/shaders/shadow_mapping.vs", "res/shaders/shadow_mapping.frag", scene.Shaders, "res/materials/united.png", "");
 
     scene.Light.add_dirLight(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(-0.2f, -1.0f, -0.3f), 
         glm::vec3(0.25f, 0.25f, 0.25f), glm::vec3(0.4f, 0.4f, 0.4f), glm::vec3(0.5f, 0.5f, 0.5f));
@@ -48,15 +51,19 @@ void main_loop()
 
     scene.SkyBox.addSkybox("res/shaders/skybox.vs","res/shaders/skybox.frag","res/maps/skybox/right.jpg", "res/maps/skybox/left.jpg", "res/maps/skybox/top.jpg", "res/maps/skybox/bottom.jpg", "res/maps/skybox/front.jpg", "res/maps/skybox/back.jpg");
 
+    int suc;
+    //Shader shader("res/shaders/shadow_mapping.vs", "res/shaders/shadow_mapping.fs", suc);
+    Shader simpleDepthShader("res/shaders/shadow_mapping_depth.vs", "res/shaders/shadow_mapping_depth.frag", suc); // убрать это нужно для дебага лишь
 
-    /*const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+    const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
     unsigned int depthMapFBO;
     glGenFramebuffers(1, &depthMapFBO);
     // create depth texture
     unsigned int depthMap;
     glGenTextures(1, &depthMap);
     glBindTexture(GL_TEXTURE_2D, depthMap);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 
+                        SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
@@ -68,7 +75,17 @@ void main_loop()
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
     glDrawBuffer(GL_NONE);
     glReadBuffer(GL_NONE);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);*/
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    //shader.Use();
+    //shader.setInt("diffuseTexture", 0);
+    //shader.setInt("shadowMap", 1);ц
+    //debugDepthQuad.use();
+    //debugDepthQuad.setInt("depthMap", 0);
+
+    // lighting info
+    // -------------
+    //glm::vec3 lightPos(-2.0f, 4.0f, -1.0f);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -82,7 +99,45 @@ void main_loop()
 
 //		light.collision_model = light.do_collis(light.curentPosition);
 
-        scene.draw_scene(camera, WIDTH, HEIGHT);
+        // 1. render depth of scene to texture (from light's perspective)
+        // --------------------------------------------------------------
+        glm::mat4 lightProjection, lightView;
+        glm::mat4 lightSpaceMatrix;
+        float near_plane = 1.0f, far_plane = 7.5f;
+        //lightProjection = glm::perspective(glm::radians(45.0f), (GLfloat)SHADOW_WIDTH / (GLfloat)SHADOW_HEIGHT, near_plane, far_plane); // note that if you use a perspective projection matrix you'll have to change the light position as the current light position isn't enough to reflect the whole scene
+        lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+        lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
+        lightSpaceMatrix = lightProjection * lightView;
+        // render scene from light's point of view
+
+        simpleDepthShader.Use();
+        simpleDepthShader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
+
+        glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+        glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+        glClear(GL_DEPTH_BUFFER_BIT);
+
+        glm::mat4 model(1.0f);
+        model = glm::translate(model, scene.Model.model_3d[0].transform.position);
+        model = glm::scale(model, scene.Model.model_3d[0].transform.scale);
+        simpleDepthShader.setMat4("model", model);
+        glm::mat4 model1(1.0f);
+        model1 = glm::translate(model1, scene.Model.model_3d[1].transform.position);
+        model1 = glm::scale(model1, scene.Model.model_3d[1].transform.scale);
+        simpleDepthShader.setMat4("model", model1);
+        glm::mat4 model2(1.0f);
+        model2 = glm::translate(model2, scene.Model.model_3d[2].transform.position);
+        model2 = glm::scale(model2, scene.Model.model_3d[2].transform.scale);
+        simpleDepthShader.setMat4("model", model2);
+
+        //нужно все модели передать в simpleDepthShader
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        // reset viewport
+        glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        scene.draw_scene(camera, WIDTH, HEIGHT, depthMap);
 
         glfwSwapBuffers(window);
     }

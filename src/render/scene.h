@@ -12,5 +12,5 @@ public:
 	t_skybox SkyBox;
 	//Camera MainCamera;
 
-	void draw_scene(Camera& camera, int WIDTH, int HEIGHT);
+	void draw_scene(Camera& camera, int WIDTH, int HEIGHT, unsigned int depthMap);
 };

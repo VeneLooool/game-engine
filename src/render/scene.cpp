@@ -1,9 +1,19 @@
 #include "scene.h"
 
-void t_scene::draw_scene(Camera& camera, int WIDTH, int HEIGHT)
+void t_scene::draw_scene(Camera& camera, int WIDTH, int HEIGHT, unsigned int depthMap)
 {
+	glm::vec3 light_Pos(-2.0f, 4.0f, -1.0f);
+
 	glm::mat4 view = camera.GetViewMatrix();
 	glm::mat4 projection = glm::perspective(camera.Zoom, (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
+
+	glm::mat4 lightProjection, lightView;
+	glm::mat4 lightSpaceMatrix;
+	float near_plane = 1.0f, far_plane = 7.5f;
+	//lightProjection = glm::perspective(glm::radians(45.0f), (GLfloat)SHADOW_WIDTH / (GLfloat)SHADOW_HEIGHT, near_plane, far_plane); // note that if you use a perspective projection matrix you'll have to change the light position as the current light position isn't enough to reflect the whole scene
+	lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+	lightView = glm::lookAt(light_Pos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
+	lightSpaceMatrix = lightProjection * lightView;
 
 	for (int curShader = 0; curShader < Shaders.vec.size(); curShader++)
 	{
@@ -35,8 +45,12 @@ void t_scene::draw_scene(Camera& camera, int WIDTH, int HEIGHT)
 			glm::mat4 model(1.0f);
 			model = glm::translate(model, Model.model_3d[Shaders.vec[curShader].depend_model[curModel]].transform.position);
 			model = glm::scale(model, Model.model_3d[Shaders.vec[curShader].depend_model[curModel]].transform.scale);
+			//added rotate
 			
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+			Shaders.vec[curShader].setVec3("lightPos", light_Pos);
+			Shaders.vec[curShader].setMat4("lightSpaceMatrix", lightSpaceMatrix);
 
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, Model.model_3d[Shaders.vec[curShader].depend_model[curModel]].texture.texture);
@@ -45,7 +59,12 @@ void t_scene::draw_scene(Camera& camera, int WIDTH, int HEIGHT)
 			glActiveTexture(GL_TEXTURE1);
 			glBindTexture(GL_TEXTURE_2D, Model.model_3d[Shaders.vec[curShader].depend_model[curModel]].texture.blikMap);
 			glUniform1i(glGetUniformLocation(Shaders.vec[curShader].Program, "material.specular"), 1);
-			
+
+			//передача карты глубины в шейдер	
+			glActiveTexture(GL_TEXTURE2);
+			glBindTexture(GL_TEXTURE_2D, depthMap);
+			glUniform1i(glGetUniformLocation(Shaders.vec[curShader].Program, "shadowMap"), 2);
+
 			glBindVertexArray(Model.model_3d[Shaders.vec[curShader].depend_model[curModel]].VAO);
 			glDrawElements(GL_TRIANGLES, Model.model_3d[Shaders.vec[curShader].depend_model[curModel]].tri.size(), GL_UNSIGNED_INT, 0);
 			glBindVertexArray(0);
