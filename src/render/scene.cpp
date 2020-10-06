@@ -1,6 +1,6 @@
 #include "scene.h"
 
-void t_scene::draw_scene(Camera& camera, int WIDTH, int HEIGHT, unsigned int depthMap)
+void t_scene::draw_scene(Camera& camera, int WIDTH, int HEIGHT, unsigned int depthMapFBO, unsigned int depthMap, Shader& shader_depth)
 {
 	glm::vec3 light_Pos(-2.0f, 2.0f, -1.0f);
 
@@ -15,11 +15,29 @@ void t_scene::draw_scene(Camera& camera, int WIDTH, int HEIGHT, unsigned int dep
 	lightView = glm::lookAt(light_Pos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
 	lightSpaceMatrix = lightProjection * lightView;
 
+	const unsigned int SHADOW_WIDTH = 4096, SHADOW_HEIGHT = 4096;
+
+	shader_depth.Use();
+	shader_depth.setMat4("lightSpaceMatrix", lightSpaceMatrix);
+
+	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+	glClear(GL_DEPTH_BUFFER_BIT);
+
+	shadow_render(shader_depth);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	glViewport(0, 0, WIDTH, HEIGHT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 	for (int curShader = 0; curShader < Shaders.vec.size(); curShader++)
 	{
 		Shaders.vec[curShader].Use();
 		Shaders.vec[curShader].setVec3("viewPos", camera.Position);
-		Shaders.vec[curShader].setFloat("material.shininess", 32.0f);
+		//Shaders.vec[curShader].setFloat("material.shininess", 32.0f);
+
+		Shaders.vec[curShader].setVec3("lightPos", light_Pos);
+		Shaders.vec[curShader].setMat4("lightSpaceMatrix", lightSpaceMatrix);
 
 		for (int curPointLight = 0; curPointLight < Light.pointLight.size(); curPointLight++)
 		{
@@ -49,21 +67,18 @@ void t_scene::draw_scene(Camera& camera, int WIDTH, int HEIGHT, unsigned int dep
 			
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
-			Shaders.vec[curShader].setVec3("lightPos", light_Pos);
-			Shaders.vec[curShader].setMat4("lightSpaceMatrix", lightSpaceMatrix);
-
 			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, Model.model_3d[Shaders.vec[curShader].depend_model[curModel]].texture.texture);
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, depthMap);
+
+			/*glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, Model.model_3d[Shaders.vec[curShader].depend_model[curModel]].texture.texture);
 			glUniform1i(glGetUniformLocation(Shaders.vec[curShader].Program, "material.diffuse"), 0);
 
 			glActiveTexture(GL_TEXTURE1);
 			glBindTexture(GL_TEXTURE_2D, Model.model_3d[Shaders.vec[curShader].depend_model[curModel]].texture.blikMap);
-			glUniform1i(glGetUniformLocation(Shaders.vec[curShader].Program, "material.specular"), 1);
-
-			//передача карты глубины в шейдер	
-			glActiveTexture(GL_TEXTURE2);
-			glBindTexture(GL_TEXTURE_2D, depthMap);
-			glUniform1i(glGetUniformLocation(Shaders.vec[curShader].Program, "shadowMap"), 2);
+			glUniform1i(glGetUniformLocation(Shaders.vec[curShader].Program, "material.specular"), 1);*/
 
 			glBindVertexArray(Model.model_3d[Shaders.vec[curShader].depend_model[curModel]].VAO);
 			glDrawElements(GL_TRIANGLES, Model.model_3d[Shaders.vec[curShader].depend_model[curModel]].tri.size(), GL_UNSIGNED_INT, 0);

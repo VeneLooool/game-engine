@@ -12,6 +12,6 @@ public:
 	t_skybox SkyBox;
 	//Camera MainCamera;
 
-	void draw_scene(Camera& camera, int WIDTH, int HEIGHT, unsigned int depthMap);
+	void draw_scene(Camera& camera, int WIDTH, int HEIGHT, unsigned int depthMapFBO, unsigned int depthMap, Shader& shader_depth);
 	void shadow_render(const Shader& shader);
 };
