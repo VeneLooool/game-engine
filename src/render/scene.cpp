@@ -2,7 +2,7 @@
 
 void t_scene::draw_scene(Camera& camera, int WIDTH, int HEIGHT, unsigned int depthMap)
 {
-	glm::vec3 light_Pos(-2.0f, 4.0f, -1.0f);
+	glm::vec3 light_Pos(-2.0f, 2.0f, -1.0f);
 
 	glm::mat4 view = camera.GetViewMatrix();
 	glm::mat4 projection = glm::perspective(camera.Zoom, (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
@@ -72,4 +72,35 @@ void t_scene::draw_scene(Camera& camera, int WIDTH, int HEIGHT, unsigned int dep
 
 	}
 	SkyBox.drawSkybox(view, projection);
+}
+
+void t_scene::shadow_render(const Shader& shader) {
+	// floor
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::translate(model, Model.model_3d[0].transform.position);
+	model = glm::scale(model, Model.model_3d[0].transform.scale);
+	shader.setMat4("model", model);
+	// render Cube
+	glBindVertexArray(Model.model_3d[0].VAO);
+	glDrawElements(GL_TRIANGLES, Model.model_3d[0].tri.size(), GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
+
+	// cubes
+	model = glm::mat4(1.0f);
+	model = glm::translate(model, Model.model_3d[1].transform.position);
+	model = glm::scale(model, Model.model_3d[1].transform.scale);
+	shader.setMat4("model", model);
+	// render Cube
+	glBindVertexArray(Model.model_3d[1].VAO);
+	glDrawElements(GL_TRIANGLES, Model.model_3d[1].tri.size(), GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
+
+	model = glm::mat4(1.0f);
+	model = glm::translate(model, Model.model_3d[2].transform.position);
+	model = glm::scale(model, Model.model_3d[2].transform.scale);
+	shader.setMat4("model", model);
+	// render Cube
+	glBindVertexArray(Model.model_3d[2].VAO);
+	glDrawElements(GL_TRIANGLES, Model.model_3d[2].tri.size(), GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
 }

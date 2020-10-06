@@ -13,4 +13,5 @@ public:
 	//Camera MainCamera;
 
 	void draw_scene(Camera& camera, int WIDTH, int HEIGHT, unsigned int depthMap);
+	void shadow_render(const Shader& shader);
 };
