@@ -47,11 +47,11 @@ void main_loop()
     scene.SkyBox.addSkybox("res/shaders/skybox.vs","res/shaders/skybox.frag","res/maps/skybox/right.jpg", "res/maps/skybox/left.jpg", "res/maps/skybox/top.jpg", "res/maps/skybox/bottom.jpg", "res/maps/skybox/front.jpg", "res/maps/skybox/back.jpg");
 
     scene.Model.add_3d_model(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), "res/models/cube.obj", 32.0f, -1,
-        "res/shaders/shadow_debug_mapping.vs", "res/shaders/shadow_debug_mapping.frag", scene.Shaders, "res/materials/wood.png", ""/*"res/materials/unitedBlack.png"*/); //тут вылетает ошибка по загрузке шейдеров разобраться
+        "res/shaders/shadow/shadow_debug_mapping.vs", "res/shaders/shadow/shadow_debug_mapping.frag", scene.Shaders, "res/materials/wood.png", ""/*"res/materials/unitedBlack.png"*/); //тут вылетает ошибка по загрузке шейдеров разобраться
     scene.Model.add_3d_model(glm::vec3(-0.8f, 0.8f, -0.8f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.2f, 0.2f, 0.2f), "res/models/cube.obj", 0.0f, -1,
         "res/shaders/lamp.vs", "res/shaders/lamp.frag", scene.Shaders, "", "");
     scene.Model.add_3d_model(glm::vec3(0.0f, -1.5f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(20.0f, 0.2f, 20.0f), "res/models/plane.obj", 32.0f, -1,
-        "res/shaders/shadow_debug_mapping.vs", "res/shaders/shadow_debug_mapping.frag", scene.Shaders, "res/materials/wood.png", "");
+        "res/shaders/shadow/shadow_debug_mapping.vs", "res/shaders/shadow/shadow_debug_mapping.frag", scene.Shaders, "res/materials/wood.png", "");
 
     scene.Light.add_dirLight(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(-0.2f, -1.0f, -0.3f),
         glm::vec3(0.25f, 0.25f, 0.25f), glm::vec3(0.4f, 0.4f, 0.4f), glm::vec3(0.5f, 0.5f, 0.5f));
@@ -59,12 +59,12 @@ void main_loop()
         glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3(1.0f, 1.0f, 1.0f), 1.0f, 0.045, 0.0075);
 
     int suc;
-    //Shader shader("res/shaders/shadow_debug_mapping.vs", "res/shaders/shadow_debug_mapping.frag", suc);
-    Shader simpleDepthShader("res/shaders/shadow_debug_depth.vs", "res/shaders/shadow_debug_depth.frag", suc);
+    //Shader simpleDepthShader("res/shaders/shadow_debug_mapping.vs", "res/shaders/shadow_debug_mapping.frag", suc);
+    Shader simpleDepthShader("res/shaders/shadow/shadow_debug_depth.vs", "res/shaders/shadow/shadow_debug_depth.frag", suc, "res/shaders/shadow/shadow_debug_depth.gs");
 
     const unsigned int SHADOW_WIDTH = 4096, SHADOW_HEIGHT = 4096;
     //const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
-    unsigned int depthMapFBO;
+    /*unsigned int depthMapFBO;
     glGenFramebuffers(1, &depthMapFBO);
     // create depth texture
     unsigned int depthMap;
@@ -76,10 +76,29 @@ void main_loop()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
     float borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
-    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);  
     // attach depth texture as FBO's depth buffer
     glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);*/
+    unsigned int depthMapFBO;
+    glGenFramebuffers(1, &depthMapFBO);
+    // create depth cubemap texture
+    unsigned int depthCubemap;
+    glGenTextures(1, &depthCubemap);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
+    for (unsigned int i = 0; i < 6; ++i)
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    // attach depth texture as FBO's depth buffer
+    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthCubemap, 0);
     glDrawBuffer(GL_NONE);
     glReadBuffer(GL_NONE);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -90,7 +109,7 @@ void main_loop()
 
     scene.Shaders.vec[0].Use();
     scene.Shaders.vec[0].setInt("diffuseTexture", 0);
-    scene.Shaders.vec[0].setInt("shadowMap", 1);
+    scene.Shaders.vec[0].setInt("depthMap", 1);
 
     //debugDepthQuad.use();
     //debugDepthQuad.setInt("depthMap", 0);
@@ -115,7 +134,7 @@ void main_loop()
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, depthMap);*/
 
-        scene.draw_scene(camera, WIDTH, HEIGHT, depthMapFBO, depthMap, simpleDepthShader);
+        scene.draw_scene(camera, WIDTH, HEIGHT, depthMapFBO, depthCubemap, simpleDepthShader);
 
         glfwSwapBuffers(window);
     }
