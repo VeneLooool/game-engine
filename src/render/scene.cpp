@@ -7,21 +7,14 @@ void t_scene::draw_scene(Camera& camera, int WIDTH, int HEIGHT, unsigned int dep
 	glm::mat4 view = camera.GetViewMatrix();
 	glm::mat4 projection = glm::perspective(camera.Zoom, (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
 
-	//glm::mat4 lightProjection, lightView;
-	//glm::mat4 lightSpaceMatrix;
-	//float near_plane = 1.0f, far_plane = 7.5f;
-	//lightProjection = glm::perspective(glm::radians(45.0f), (GLfloat)SHADOW_WIDTH / (GLfloat)SHADOW_HEIGHT, near_plane, far_plane); // note that if you use a perspective projection matrix you'll have to change the light position as the current light position isn't enough to reflect the whole scene
-	//lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
-	//lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
-	//lightSpaceMatrix = lightProjection * lightView;
-
 	const unsigned int SHADOW_WIDTH = 4096, SHADOW_HEIGHT = 4096;
 
-	// 0. create depth cubemap transformation matrices
-		// -----------------------------------------------
 	float near_plane = 1.0f;
 	float far_plane = 25.0f;
-	glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), (float)SHADOW_WIDTH / (float)SHADOW_HEIGHT, near_plane, far_plane);
+	
+	//включить для обработки тектур
+
+	/*glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), (float)SHADOW_WIDTH / (float)SHADOW_HEIGHT, near_plane, far_plane);
 	std::vector<glm::mat4> shadowTransforms;
 	shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
 	shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
@@ -48,9 +41,9 @@ void t_scene::draw_scene(Camera& camera, int WIDTH, int HEIGHT, unsigned int dep
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	glViewport(0, 0, WIDTH, HEIGHT);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);*/
 
-	bool shadows = true;
+	bool shadows = false;
 
 
 	for (int curShader = 0; curShader < Shaders.vec.size(); curShader++)
@@ -76,12 +69,11 @@ void t_scene::draw_scene(Camera& camera, int WIDTH, int HEIGHT, unsigned int dep
 		for (int curModel = 0; curModel < Shaders.vec[curShader].depend_model.size(); curModel++)
 		{
 
-			// Get the uniform locations
 			GLint modelLoc = glGetUniformLocation(Shaders.vec[curShader].Program, "model");
 			GLint viewLoc = glGetUniformLocation(Shaders.vec[curShader].Program, "view");
 			GLint projLoc = glGetUniformLocation(Shaders.vec[curShader].Program, "projection");
+			Shaders.vec[curShader].setBool("shadows", shadows);
 
-			// Pass the matrices to the shader
 			glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 			glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 			
@@ -98,13 +90,12 @@ void t_scene::draw_scene(Camera& camera, int WIDTH, int HEIGHT, unsigned int dep
 			glActiveTexture(GL_TEXTURE1);
 			glBindTexture(GL_TEXTURE_CUBE_MAP, depthMap);
 
-			/*glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, Model.model_3d[Shaders.vec[curShader].depend_model[curModel]].texture.texture);
-			glUniform1i(glGetUniformLocation(Shaders.vec[curShader].Program, "material.diffuse"), 0);
+			//if (Model.model_3d[Shaders.vec[curShader].depend_model[curModel]].normals_map) {
 
-			glActiveTexture(GL_TEXTURE1);
-			glBindTexture(GL_TEXTURE_2D, Model.model_3d[Shaders.vec[curShader].depend_model[curModel]].texture.blikMap);
-			glUniform1i(glGetUniformLocation(Shaders.vec[curShader].Program, "material.specular"), 1);*/
+			//	glActiveTexture(GL_TEXTURE2);
+			//    glBindTexture(GL_TEXTURE_2D, Model.model_3d[Shaders.vec[curShader].depend_model[curModel]].texture.normals);
+
+			//}
 
 			glBindVertexArray(Model.model_3d[Shaders.vec[curShader].depend_model[curModel]].VAO);
 			glDrawElements(GL_TRIANGLES, Model.model_3d[Shaders.vec[curShader].depend_model[curModel]].tri.size(), GL_UNSIGNED_INT, 0);

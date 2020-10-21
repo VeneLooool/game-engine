@@ -1,7 +1,5 @@
 #include "model.h"
 
-//TODO: доделать загрузку объектов когда есть не только вершины, а нормали, текстуры 
-
 vector<glm::vec3> t_3d_model::do_collis(glm::vec3 curentPosition) { //нужно что-то по-оригинальнeе придумать, мб просто читать вершины, но тогда усложнитс€ расчет, и оптимизаци€ по ху€м пойдет
 	
 	vector <glm::vec3> collision_model;
@@ -101,6 +99,9 @@ void t_3d_model::load_obj(std::string path)
 
 void t_3d_model::setup_mesh()
 {
+
+	//calculateTan_biTan();
+
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 	glGenBuffers(1, &EBO);
@@ -120,6 +121,12 @@ void t_3d_model::setup_mesh()
 
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(t_vertex), (void*)offsetof(t_vertex, text));
+
+	/*glEnableVertexAttribArray(3);
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(t_vertex), (void*)offsetof(t_vertex, tan));
+
+	glEnableVertexAttribArray(4);
+	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(t_vertex), (void*)offsetof(t_vertex, biTan));*/
 
 	glBindVertexArray(0);
 }
@@ -161,10 +168,10 @@ void t_3d_model::draw_model(Shader& shader, t_3d_model& mod, Camera& camera, glm
 }
 
 void t_model::add_3d_model(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, string obj_path,float shininess, unsigned int curent_shader, const GLchar* strVs, const GLchar* strFrag, 
-							t_shader& vShader, const char* texture_path, const char* blikMap_path)
+							t_shader& vShader, const char* texture_path , const char* blikMap_path, const char* normals_path)
 {
 	t_3d_model model;
-	
+	model.blik_map = false; model.normals_map = false; model.texture_map = false;
 	model.ID = model_3d.size();
 
 	model.transform.position = position;
@@ -202,10 +209,42 @@ void t_model::add_3d_model(glm::vec3 position, glm::vec3 rotation, glm::vec3 sca
 		model.setup_mesh();
 	}
 
-	if (texture_path != "")
+	if (texture_path != nullptr) {
+		model.texture_map = true;
 		model.texture.load_texture(texture_path);
-	if (blikMap_path != "")
+	}
+	if (blikMap_path != nullptr) {
+		model.blik_map = true;
 		model.texture.load_blikMap(blikMap_path);
+	}
+	if (normals_path != nullptr) {
+		model.normals_map = true;
+		model.texture.load_normals(normals_path);
+	}
 
 	model_3d.push_back(model);
+}
+
+void t_3d_model::calculateTan_biTan() {
+	for (int i = 0; i < tri.size(); i+=3) {
+		// calculate tangent/bitangent vectors of both triangles
+		
+		glm::vec3 edge1 = vert[tri[i + 1]].pos - vert[tri[i]].pos;
+		glm::vec3 edge2 = vert[tri[i + 2]].pos - vert[tri[i]].pos;
+		glm::vec2 deltaUV1 = vert[tri[i + 1]].text - vert[tri[i]].text;
+		glm::vec2 deltaUV2 = vert[tri[i + 2]].text - vert[tri[i]].text;
+
+		float f = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
+
+		vert[tri[i]].tan.x = vert[tri[i + 1]].tan.x = vert[tri[i + 2]].tan.x = f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x);
+		vert[tri[i]].tan.y = vert[tri[i + 1]].tan.y = vert[tri[i + 2]].tan.y = f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y);
+		vert[tri[i]].tan.z = vert[tri[i + 1]].tan.z = vert[tri[i + 2]].tan.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
+		//vert[tri[i]].tan = glm::normalize(vert[tri[i]].tan);
+
+
+		vert[tri[i]].biTan.x = vert[tri[i + 1]].biTan.x = vert[tri[i + 2]].biTan.x = f * (-deltaUV2.x * edge1.x + deltaUV1.x * edge2.x);
+		vert[tri[i]].biTan.y = vert[tri[i + 1]].biTan.y = vert[tri[i + 2]].biTan.y = f * (-deltaUV2.x * edge1.y + deltaUV1.x * edge2.y);
+		vert[tri[i]].biTan.z = vert[tri[i + 1]].biTan.z = vert[tri[i + 2]].biTan.z = f * (-deltaUV2.x * edge1.z + deltaUV1.x * edge2.z);
+		//vert[tri[i]].biTan = glm::normalize(vert[tri[i]].biTan);
+	}
 }
