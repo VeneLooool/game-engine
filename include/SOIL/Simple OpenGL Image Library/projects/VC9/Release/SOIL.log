@@ -1,0 +1,42 @@
+﻿  image_DXT.c
+C:\Users\panih\source\repos\Test_OpenGL\GL\SOIL\Simple OpenGL Image Library\src\image_DXT.c(92,1): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\stdio.h(208): message : см. объявление "fopen"
+  image_helper.c
+C:\Users\panih\source\repos\Test_OpenGL\GL\SOIL\Simple OpenGL Image Library\src\image_helper.c(325,1): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
+C:\Users\panih\source\repos\Test_OpenGL\GL\SOIL\Simple OpenGL Image Library\src\image_helper.c(366,58): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\Users\panih\source\repos\Test_OpenGL\GL\SOIL\Simple OpenGL Image Library\src\image_helper.c(373,46): warning C4244: =: преобразование "float" в "int", возможна потеря данных
+C:\Users\panih\source\repos\Test_OpenGL\GL\SOIL\Simple OpenGL Image Library\src\image_helper.c(415,58): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\Users\panih\source\repos\Test_OpenGL\GL\SOIL\Simple OpenGL Image Library\src\image_helper.c(422,62): warning C4244: =: преобразование "float" в "int", возможна потеря данных
+  SOIL.c
+C:\Users\panih\source\repos\Test_OpenGL\GL\SOIL\Simple OpenGL Image Library\src\SOIL.c(1719,36): warning C4018: <=: несоответствие типов со знаком и без знака
+C:\Users\panih\source\repos\Test_OpenGL\GL\SOIL\Simple OpenGL Image Library\src\SOIL.c(1729,19): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\panih\source\repos\Test_OpenGL\GL\SOIL\Simple OpenGL Image Library\src\SOIL.c(1841,1): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\stdio.h(208): message : см. объявление "fopen"
+  stb_image_aug.c
+C:\Users\panih\source\repos\Test_OpenGL\GL\SOIL\Simple OpenGL Image Library\src\stb_image_aug.c(177,1): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\stdio.h(208): message : см. объявление "fopen"
+C:\Users\panih\source\repos\Test_OpenGL\GL\SOIL\Simple OpenGL Image Library\src\stb_image_aug.c(251,1): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\stdio.h(208): message : см. объявление "fopen"
+C:\Users\panih\source\repos\Test_OpenGL\GL\SOIL\Simple OpenGL Image Library\src\stb_image_aug.c(303,1): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\stdio.h(208): message : см. объявление "fopen"
+C:\Users\panih\source\repos\Test_OpenGL\GL\SOIL\Simple OpenGL Image Library\src\stb_image_aug.c(1557,1): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\stdio.h(208): message : см. объявление "fopen"
+C:\Users\panih\source\repos\Test_OpenGL\GL\SOIL\Simple OpenGL Image Library\src\stb_image_aug.c(2394,1): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\stdio.h(208): message : см. объявление "fopen"
+C:\Users\panih\source\repos\Test_OpenGL\GL\SOIL\Simple OpenGL Image Library\src\stb_image_aug.c(2709,1): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\stdio.h(208): message : см. объявление "fopen"
+C:\Users\panih\source\repos\Test_OpenGL\GL\SOIL\Simple OpenGL Image Library\src\stb_image_aug.c(2995,1): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\stdio.h(208): message : см. объявление "fopen"
+C:\Users\panih\source\repos\Test_OpenGL\GL\SOIL\Simple OpenGL Image Library\src\stb_image_aug.c(3209,1): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\stdio.h(208): message : см. объявление "fopen"
+C:\Users\panih\source\repos\Test_OpenGL\GL\SOIL\Simple OpenGL Image Library\src\stb_image_aug.c(3548,1): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\stdio.h(208): message : см. объявление "fopen"
+C:\Users\panih\source\repos\Test_OpenGL\GL\SOIL\Simple OpenGL Image Library\src\stb_image_aug.c(3644,1): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\stdio.h(208): message : см. объявление "fopen"
+C:\Users\panih\source\repos\Test_OpenGL\GL\SOIL\Simple OpenGL Image Library\src\stbi_DDS_aug_c.h(362,19): warning C4018: >: несоответствие типов со знаком и без знака
+C:\Users\panih\source\repos\Test_OpenGL\GL\SOIL\Simple OpenGL Image Library\src\stbi_DDS_aug_c.h(366,19): warning C4018: >: несоответствие типов со знаком и без знака
+C:\Users\panih\source\repos\Test_OpenGL\GL\SOIL\Simple OpenGL Image Library\src\stbi_DDS_aug_c.h(390,19): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\panih\source\repos\Test_OpenGL\GL\SOIL\Simple OpenGL Image Library\src\stbi_DDS_aug_c.h(427,19): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\panih\source\repos\Test_OpenGL\GL\SOIL\Simple OpenGL Image Library\src\stbi_DDS_aug_c.h(498,1): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\stdio.h(208): message : см. объявление "fopen"
+  SOIL.vcxproj -> C:\Users\panih\source\repos\Test_OpenGL\GL\SOIL\Simple OpenGL Image Library\projects\VC9\Release\SOIL.lib

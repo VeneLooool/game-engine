@@ -1,0 +1,7 @@
+﻿LINK : warning LNK4098: библиотека по умолчанию "LIBCMT" конфликтует с использованием других библиотек; используйте /NODEFAULTLIB:library
+core.obj : error LNK2001: неразрешенный внешний символ "stbi_loadf"
+core.obj : error LNK2001: неразрешенный внешний символ "stbi_load"
+core.obj : error LNK2001: неразрешенный внешний символ "stbi_image_free"
+texture.obj : error LNK2001: неразрешенный внешний символ "SOIL_free_image_data"
+texture.obj : error LNK2001: неразрешенный внешний символ "SOIL_load_image"
+C:\Users\panih\source\repos\Engine\x64\Release\Engine.exe : fatal error LNK1120: неразрешенных внешних элементов: 5

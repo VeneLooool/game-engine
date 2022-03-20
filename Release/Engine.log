@@ -1,0 +1,22 @@
+﻿  core.cpp
+C:\Users\panih\source\repos\Engine\Engine\src\core\core.cpp(279,31): warning C4244: инициализация: преобразование "double" в "unsigned int", возможна потеря данных
+C:\Users\panih\source\repos\Engine\Engine\src\core\core.cpp(280,32): warning C4244: инициализация: преобразование "double" в "unsigned int", возможна потеря данных
+C:\Users\panih\source\repos\Engine\Engine\src\core\core.cpp(530,17): warning C4244: =: преобразование "double" в "GLfloat", возможна потеря данных
+C:\Users\panih\source\repos\Engine\Engine\src\core\core.cpp(531,17): warning C4244: =: преобразование "double" в "GLfloat", возможна потеря данных
+C:\Users\panih\source\repos\Engine\Engine\src\core\core.cpp(535,21): warning C4244: инициализация: преобразование "double" в "GLfloat", возможна потеря данных
+C:\Users\panih\source\repos\Engine\Engine\src\core\core.cpp(536,21): warning C4244: инициализация: преобразование "double" в "GLfloat", возможна потеря данных
+C:\Users\panih\source\repos\Engine\Engine\src\core\core.cpp(538,13): warning C4244: =: преобразование "double" в "GLfloat", возможна потеря данных
+C:\Users\panih\source\repos\Engine\Engine\src\core\core.cpp(539,13): warning C4244: =: преобразование "double" в "GLfloat", возможна потеря данных
+C:\Users\panih\source\repos\Engine\Engine\src\core\core.cpp(546,31): warning C4244: аргумент: преобразование "double" в "GLfloat", возможна потеря данных
+C:\Users\panih\source\repos\Engine\Engine\src\core\core.cpp(684,39): warning C4305: инициализация: усечение из "double" в "float"
+C:\Users\panih\source\repos\Engine\Engine\src\core\core.cpp(749,57): warning C4244: аргумент: преобразование "float" в "GLsizei", возможна потеря данных
+C:\Users\panih\source\repos\Engine\Engine\src\core\core.cpp(751,57): warning C4244: аргумент: преобразование "float" в "GLsizei", возможна потеря данных
+C:\Users\panih\source\repos\Engine\Engine\src\core\core.cpp(753,57): warning C4244: аргумент: преобразование "float" в "GLsizei", возможна потеря данных
+LINK : warning LNK4098: библиотека по умолчанию "LIBCMT" конфликтует с использованием других библиотек; используйте /NODEFAULTLIB:library
+  Создание кода
+  0 of 687 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  Создание кода завершено
+glew32s.lib(glew.obj) : warning LNK4099: "vc120.pdb" PDB не найден с "glew32s.lib(glew.obj)" или на "C:\Users\panih\source\repos\Engine\Release\vc120.pdb"; компоновка объекта выполняется как при отсутствии отладочных данных
+  Engine.vcxproj -> C:\Users\panih\source\repos\Engine\Release\Engine.exe

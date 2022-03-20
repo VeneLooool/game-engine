@@ -12,7 +12,9 @@ public:
 	glm::vec3 diffuse;
 	glm::vec3 specular;
 
-    void init_dirLight(glm::vec3 direct, glm::vec3 ambi, glm::vec3 diff, glm::vec3 specul);
+    glm::vec3 color;
+
+    void init_dirLight(glm::vec3 direct, glm::vec3 ambi, glm::vec3 diff, glm::vec3 specul, glm::vec3 color);
     void load_to_shader(Shader& shader, unsigned int curent_id);
 };
 
@@ -30,9 +32,11 @@ public:
     glm::vec3 diffuse;
     glm::vec3 specular;
 
+    glm::vec3 color;
+
     float range;
 
-    void init_pointLight(glm::vec3 lightPos, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic);
+    void init_pointLight(glm::vec3 lightPos, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic, glm::vec3 color);
     void load_to_shader(Shader& shader, unsigned int curent_id);
 };
 
@@ -54,9 +58,11 @@ public:
     glm::vec3 diffuse;
     glm::vec3 specular;
 
+    glm::vec3 color;
+
     float range;
 
-    void init_spotLight(glm::vec3 lightPos, glm::vec3 dir, glm::vec3 amb, glm::vec3 diff, glm::vec3 specul, float constan, float lin, float quad, float cutOf, float outerCutOf);
+    void init_spotLight(glm::vec3 lightPos, glm::vec3 dir, glm::vec3 amb, glm::vec3 diff, glm::vec3 specul, float constan, float lin, float quad, float cutOf, float outerCutOf, glm::vec3 color);
     void load_to_shader(Shader& shader, unsigned int curent_id);
 };
 
@@ -67,7 +73,7 @@ public:
     vector<t_spotLight> spotLight;
     vector<t_pointLight> pointLight;
 
-    void add_dirLight(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
-    void add_spotLight(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, glm::vec3 lightPos, glm::vec3 dir, glm::vec3 amb, glm::vec3 diff, glm::vec3 specul, float constan, float lin, float quad, float cutOf, float outerCutOf);
-    void add_pointLight(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic);
+    void add_dirLight(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, glm::vec3 color, glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
+    void add_spotLight(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, glm::vec3 color, glm::vec3 lightPos, glm::vec3 dir, glm::vec3 amb, glm::vec3 diff, glm::vec3 specul, float constan, float lin, float quad, float cutOf, float outerCutOf);
+    void add_pointLight(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, glm::vec3 color, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic);
 };
